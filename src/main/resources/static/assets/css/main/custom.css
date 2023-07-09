@@ -1,0 +1,38 @@
+.narbar-custom{
+    height: 64px;
+}
+.app-top{
+    margin-top: 65px;
+}
+.no-before::before{
+    content: none !important;
+}
+.menu-item-active{
+    border-bottom: 3px solid rgb(0, 99, 170);
+}
+/* home-page-teacher */
+.drw-item:hover{
+    background-color: #435ebe;
+    color: aliceblue;
+}
+/* create-class */
+.dot-border{
+    border: 2px dashed #a3b1e3;
+
+}
+.dot-border img{
+    width: 100%;
+}
+@media screen and (max-width: 1199px){
+    .navbar{
+        display: none;
+    }
+}
+.accordion-body{
+    color: #435ebe !important;
+}
+/* custom css start */
+.choosed{
+    background-color: green !important;
+}
+/* custom css end */

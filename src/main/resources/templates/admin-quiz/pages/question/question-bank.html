@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card mt-4" layout:fragment="content">
+  <div class="card-body px-5 shadow rounded-3">
+    <form class="row" id="myForm" th:object="${questionBank}" method="POST" th:action="@{/admin/question-bank}">
+      <div class="col-md-12">
+        <p class="fs-6 mb-2 fw-bold">Tên ngân hàng câu hỏi <span class="text-danger fs-6 fw-bold">(*)</span></p>
+        <div class="form-group mb-0">
+          <input type="text" th:field="*{questionBankName}" id="nameClass" class="form-control rounded-3 border-opacity-10" placeholder="Ví dụ: Lớp học tiếng Anh">
+        </div>
+        <p class="fs-6 mb-2 mt-3 fw-bold">Môn học<span class="text-danger fs-6 fw-bold">(*)</span></p>
+        <div class="mt-2 rounded-4">
+          <select class="form-select rounded-3 mb-4 mx-2 px-2 py-2 mt-1 text-center" id="mySelect" th:field="*{subjectId}">
+            <option selected value="0">-------- Lựa chọn môn học --------</option>
+            <option th:each="item:${subjects}" th:value="${item.subjectId}">[[${item.subjectName}]]</option>            
+          </select>
+        </div>
+        <button class='btn btn-primary font-bold mt-2 mb-2' id="abc"><i class="fas fa-check me-2"></i> Tạo ngân hàng</button>
+      </div>
+      <div class="col-md-12 pt-2 px-5">
+        <div class="email-fixed-search flex-grow-1">
+
+          <div class="form-group mb-0 has-icon-right input-group input-group-lg">
+            <input type="text" id="mySearch" class="form-control rounded-3 border-opacity-10" placeholder="Tìm kiếm ...">
+            <div class="form-control-icon mt-1 me-2">
+              <i class="fas fa-search"></i>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-lg table-hover" id="table">
+            <thead>
+            <tr>
+              <th class="text-center" style="width: 1%;">#</th>
+              <th class="text-center">Tên ngân hàng</th>
+              <th class="text-center" style="width: 20%;">Thuộc môn học</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+                <tr th:each="item,start:${questionBanks}">
+                  <td class="text-bold-500 py-2 text-center">[[${start.index+1}]]</td>
+                  <td class="text-center fw-bold">
+                    <a th:href="@{/admin/chapter(questionBankId = ${item.questionBankId})}">[[${item.questionBankName}]](Số chương :[[${item.totalChapter}]])</a>
+                  </td>
+                  <td class="text-bold-500 text-center">
+                    <p>[[${item.subjectName}]]</p>
+                  </td>
+                </tr>           
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+ <script layout:fragment="script">
+        $(document).ready(function(){
+        // search filter
+            $("#mySearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+
+ </script>
+</body>
+</html>

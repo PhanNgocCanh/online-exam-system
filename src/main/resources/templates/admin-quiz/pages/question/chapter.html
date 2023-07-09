@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card mt-4" layout:fragment="content">
+  <div class="card-body px-5 shadow rounded-3">
+    <div class="row" >
+      <div class="col-md-12">
+        <p class="fs-6 mb-2 mt-3 fw-bold">Ngân hàng câu hỏi: <span class="fs-5 text-primary">[[${questionBank.questionBankName}]]</span></p>
+        <p class="fs-6 mb-2 fw-bold">Tên chương: <span class="text-danger fs-6 fw-bold">(*)</span></p>
+        <form class="form-group" th:object="${chapter}" th:action="@{/admin/chapter(questionBankId=${questionBank.questionBankId})}" method="POST">
+          <div class="form-group mb-0">
+            <input th:if="*{chapterId!=0}" type="text" id="chapterId" class="form-control rounded-3 border-opacity-10"
+                    th:field="*{chapterId}" hidden>
+            <input type="text" id="nameChapter" class="form-control rounded-3 border-opacity-10" 
+            placeholder="Ví dụ: Chương 1,2,3" th:field="*{chapterName}">
+          </div>
+          <button th:if="*{chapterId!=0}" class='btn btn-primary font-bold mt-2 mb-2' type="submit">
+            <i class="fas fa-plus me-2"></i> Cập nhật chương
+          </button>
+          <button th:unless="*{chapterId!=0}" class='btn btn-primary font-bold mt-2 mb-2' type="submit">
+            <i class="fas fa-plus me-2"></i> Tạo chương
+          </button>
+        </form>
+      </div>
+      <div class="col-md-12 pt-2 px-5">
+        <div class="email-fixed-search flex-grow-1">
+
+          <div class="form-group mb-0 has-icon-right input-group input-group-lg">
+            <input type="text" id="mySearch" class="form-control rounded-3 border-opacity-10" placeholder="Tìm kiếm ...">
+            <div class="form-control-icon mt-1 me-2">
+              <i class="fas fa-search"></i>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-lg table-hover" id="table">
+            <thead>
+            <tr>
+              <th class="text-center" style="width: 1%;">#</th>
+              <th class="text-center">Tên chương</th>
+              <th class="text-center" style="width: 20%;">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            <tr th:each="item,start:${chapters}">
+              <td class="text-bold-500 py-2 text-center">[[${start.index+1}]]</td>
+              <td class="text-center fw-bold">
+                <p><a th:href="@{/admin/chapter/{chapterId}(chapterId=${item.chapterId})}">[[${item.chapterName}]]</a>(Số câu hỏi [[${item.totalQuestion}]] câu)</p>
+              </td>
+              <td class="text-center">
+                <a class="btn btn-warning" 
+                  th:href="@{/admin/update-chapter/{chapterId}(chapterId=${item.chapterId},questionBankId=${item.questionBankId})}">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a class="btn btn-danger"
+                  th:href="@{/admin/delete-chapter/{chapterId}(chapterId=${item.chapterId},questionBankId=${item.questionBankId})}">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </td>
+            </tr>          
+            </tbody>
+          </table>
+          <input type="hidden" id="status" th:value="${status}?${status}:''">
+          <input type="hidden" id="message" th:value="${message}?${message}:''">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ <script layout:fragment="script">
+        $(document).ready(function(){
+        // search filter
+            $("#mySearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            if($('#status').val()!=""){
+                Swal.fire({
+                    position: 'center',
+                    icon: $('#status').val(),
+                    title: $('#message').val(),
+                    showConfirmButton: false,
+                    timer: 1500
+                }) 
+            }   
+        });
+
+  </script>
+</body>
+</html>

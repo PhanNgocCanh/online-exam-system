@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{client-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="row" layout:fragment="content">
+  <div class="col-12 col-md-12">
+    <div class="row">
+      <div class="col-12 col-xl-10">
+        <div class="card px-5 pt-2 overflow-auto shadow-lg bg-body rounded" style="height: 900px;">
+          <div class="p-3 border border-primary border-2 bg-body rounded-3">
+            <div class="row">
+              <div class="col-md-4 text-center">               
+                <p class="fs-6 mt-2 fw-bold">Họ và tên: [[${student.fullName}]]</p>
+                <p class="fs-6 mt-1">Lớp: [[${student.className}]]</p>
+                <p class="fs-6 mb-1">Mã đề thi: [[${test.testId}]]</p>
+              </div>
+              <div class="col-md-8 text-center"> 
+                <p class="fs-6 fw-bold mb-1">Ngày <span id="date"></span> Tháng <span id="month"></span> Năm <span id="year"></span></p> 
+                <p class="fs-6 mb-1 mt-1">Kỳ thi: <span class="fw-bold">[[${exam.examName}]]</span></p>            
+                <p class="fs-6 mb-1 mt-1">Môn thi: <span class="fw-bold">[[${subject.subjectName}]]</span></p>               
+                <p class="fs-6">Thời gian làm bài: <span class="text-danger fw-bold">[[${test.maxTime}]] phút</span></p>
+              </div>
+            </div>
+            </div>
+            <div class="card-body">
+              <p class="text-center text-primary fs-5 fw-bold mt-1 mb-0">Bài làm</p>             
+              <hr>
+              <div class="question" th:each="item,start:${questions.questionAnswerDTOs}">                
+                <div class="my-2 fw-bold">
+                  <u class="text-danger fs-6">Câu hỏi [[${start.index+1}]]: </u>
+                  <span class="ms-2" th:utext="${item.questionContent}"></span>
+                </div>
+                <div class="row ms-2">
+                  <div class="form-check form-check mb-3 col-md-6"
+                   th:each="answer,str:${item.answerDTOs}">
+                    <input class="form-check-input" type="radio" disabled 
+                    th:id="${answer.answerId}" th:value="${answer.answerId}" th:checked="${answer.answerId==item.answerSelected}">
+                    <label class="form-check-label text-black fw-bold"  th:for="${answer.answerId}">
+                      [[${answer.answerContent}]]            
+                      <i class="fas fa-times-circle text-danger fs-4 fw-bold" 
+                      th:if="${answer.answerId==item.answerSelected&&item.answerSelected!=item.correctAnswer}"></i>
+                      <i class="fas fa-check-circle text-success fs-4 fw-bold" 
+                      th:if="${(answer.answerId==item.answerSelected&&item.answerSelected==item.correctAnswer)||answer.answerId==item.correctAnswer}"></i>
+                    </div>            
+                    </label>
+                </div>
+                <p th:if="${item.answerExplain!=''&&item.answerExplain!=null}"><u class="fw-bold text-primary">Giải thích</u> : [[${item.answerExplain}]]</p>
+              </div>                  
+            </div>
+        </div>
+      </div>
+      
+      <div class="col-12 col-xl-2">
+        <div class="card shadow-lg bg-body rounded">
+          <div class="card-header pb-2">
+            <p class="text-center text-primary fs-6 fw-bold">Điểm bài thi</p>
+            <p class="text-center text-primary fs-4 fw-bold mb-1 text-danger" id="time">[[${testResult.mark}]]/[[${test.maxScore}]]</p>
+          </div>
+          <div class="card-body">
+
+          </div>
+        </div>
+        <div class="card shadow-lg bg-body rounded">
+          <div class="card-header">
+            <p class="text-center text-primary fs-6 fw-bold">Số câu đúng</p>
+            <p class="text-center text-primary fs-5 fw-bold mb-1 text-danger" id="time">[[${testResult.totalCorrectAnswer}]]/[[${test.totalSentence}]]</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script layout:fragment="script">
+   $(document).ready(function(){
+    var date = new Date();
+          $('#date').text(date.getDate())
+          $('#month').text(date.getMonth()+1)
+          $('#year').text(date.getFullYear())
+   })
+</script>
+</body>
+</html>

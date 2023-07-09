@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card mt-4" layout:fragment="content">
+  <div class="card-body px-5 shadow rounded-3">
+    <button class='btn btn-primary font-bold mt-2 mb-2' type="button" data-bs-toggle="modal"data-bs-target="#inlineForm">
+      <i class="fas fa-plus me-2"></i> Thêm mới
+    </button>
+    <div class="email-fixed-search flex-grow-1">
+
+      <div class="form-group mb-0 has-icon-right input-group input-group-lg">
+        <input type="text" id="mySearch" class="form-control rounded-3 border-opacity-10" placeholder="Tìm kiếm phòng thi...">
+        <div class="form-control-icon mt-1 me-2">
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 pt-2 px-2">
+        <div class="table-responsive">
+          <table class="table table-lg table-hover" id="table">
+            <thead>
+            <tr>
+              <th class="text-center" style="width: 10%;">Mã phòng thi</th>            
+              <th class="text-center">Tên phòng thi</th>
+              <th class="text-center">Môn thi</th>             
+              <th class="text-center">Ngày thi</th>
+              <th class="text-center">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            <tr th:each="item,start:${rooms}">
+              <td class="text-bold-500 py-2 text-center">[[${item.roomId}]]</td>             
+              <td class="text-bold-500 py-2 text-center">[[${item.roomName}]]</td>
+              <td class="text-bold-500 py-2 text-center"
+               th:each="sb:${subjects}" th:if="${sb.subjectId==item.subjectId}">
+                [[${sb.subjectName}]]
+              </td>            
+              <td class="text-bold-500 py-2 text-center">
+                [[${item.start}]]-[[${item.finish}]]
+              </td>
+              <td class="text-bold-500 py-2 text-center">
+                <a th:href="@{/admin/room-setting/{roomId}(roomId=${item.roomId})}" class="btn btn-success"><i class="fas fa-cog"></i></a>
+                <a href="" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <input type="hidden" id="status" th:value="${status}?${status}:''">
+            <input type="hidden" id="message" th:value="${message}?${message}:''">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel33">Thêm phòng thi</h4>
+          <button type="button" class="close" data-bs-dismiss="modal"
+                  aria-label="Close">
+            <i data-feather="x"></i>
+          </button>
+        </div>
+        <form action="#" th:object="${room}" th:action="@{/admin/room-exam}" method="POST">
+          <div class="modal-body">
+            <label>Tên phòng thi: </label>
+            <div class="form-group">
+              <input type="text" placeholder="Tên phòng thi"
+                     class="form-control" th:field="*{roomName}">
+            </div>           
+            <label>Tên môn thi: </label>
+            <div class="form-group">
+              <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 mt-1 text-center" th:field="*{subjectId}">
+                <option selected value="0">--------------- Chọn môn thi --------------</option>
+                <option th:each="item:${subjects}" th:value="${item.subjectId}">[[${item.subjectName}]]</option>               
+              </select>
+            </div>
+            <label>Giáo viên coi thi: </label>
+            <div class="form-group">
+              <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 mt-1 text-center" th:field="*{teacherId}">
+                <option selected value="0">--------------- Chọn giáo viên coi thi --------------</option>
+                <option th:each="item:${teachers}" th:value="${item.teacherId}">[[${item.fullName}]]</option>                
+              </select>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <label>Thời gian bắt đầu</label>
+                <input type="datetime-local" placeholder="Tên phòng thi"
+                       class="form-control" th:field="*{timeStart}">
+              </div>
+              <div class="col-md-6">
+                <label>Thời gian kết thúc</label>
+                <input type="datetime-local" placeholder="Tên phòng thi"
+                       class="form-control" th:field="*{timeFinish}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-check-label">Cho xem đáp án</label>
+              <div class="">
+                <input class="" type="radio" th:field="*{answerView}" th:id="an" value="0">Không
+                <input class="" type="radio" th:field="*{answerView}" th:id="an" value="1">Có
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary float-end me-3 mb-2" type="submit">Tạo mới</button>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light-secondary"
+                  data-bs-dismiss="modal">
+            <i class="bx bx-x d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script layout:fragment="script">
+        $(document).ready(function(){
+        // search filter
+            $("#mySearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            if($('#status').val()!=""){
+                    Swal.fire({
+                        position: 'center',
+                        icon: $('#status').val(),
+                        title: $('#message').val(),
+                        showConfirmButton: false,
+                        timer: 1500
+                    }) 
+                } 
+        });
+</script>
+</body>
+</html>

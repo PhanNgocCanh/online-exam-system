@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg bg-body rounded">
+    <a class='btn btn-warning mb-2' th:href="@{/admin/test/{testId}(testId=${test.testId})}"><i class="fas fa-backward me-2"></i> Quay trở lại</a>
+    <form action="#" th:action="@{/admin/test/add-question}" method="POST" id="myForm">
+      <input type="text" name="testId" th:value="${test.testId}" hidden>
+      <div class="email-action">
+        <button class='btn btn-success float-end me-2' id="btn-add" type="button"><i class="fas fa-plus"></i> Thêm vào đề thi</button>
+        <div class="action-right mb-2">
+          <div class='btn btn-primary font-bold py-2 mb-1'>Môn học: [[${subject.subjectName}]]</div>
+          <div class='btn btn-primary font-bold py-2 mb-1'>Đề thi đang thêm vào: [[${test.testName}]]</div>
+        </div>
+        <!-- action left end here -->
+        <div class="email-fixed-search flex-grow-1">
+
+          <div class="form-group mb-0 has-icon-right input-group input-group-lg">
+            <input type="text" id="mySearch" class="form-control rounded-3 border-opacity-10" placeholder="Tìm kiếm ...">
+            <div class="form-control-icon mt-1 me-2">
+              <i class="fas fa-search"></i>
+            </div>
+          </div>
+        </div>
+        <!-- action right start here -->
+      </div>
+
+      <!-- / action right -->
+      <div class="table-responsive overflow-auto" style="height: 1000px;">
+        <table class="table table-lg table-hover" id="table">
+          <thead>
+          <tr>
+            <th class="text-center" style="width: 1%;">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="all" />
+              </div>
+            </th>
+            <th class="text-center">Nội dung</th>
+            <th class="" style="width: 30%;">Ngân hàng-Chủ đề-Cấp độ</th>
+          </tr>
+          </thead>
+          <tbody id="myTable">
+          <tr th:each="item:${questions}">
+            <td class="text-bold-500 py-1 text-center">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="questionIds" id="item1" th:value="${item.questionId}"/>
+              </div>
+            </td>
+            <td class="text-center py-1 fw-bold">
+              <p th:utext="${item.questionContent}"></p>
+            </td>
+            <td class="py-1">
+              <ul class="p-0 ps-1">              
+                <li th:each="chapter:${chapters}" th:if="${chapter.chapterId==item.chapterId}">
+                  Chương: [[${chapter.chapterName}]]
+                </li>
+                <li th:if="${item.level=='NB'}">Cấp độ: Nhận biết.</li>
+                <li th:if="${item.level=='TH'}">Cấp độ: Thông hiểu.</li>
+                <li th:if="${item.level=='VD'}">Cấp độ: Vận dụng.</li>
+                <li th:if="${item.level=='VDC'}">Cấp độ: Vận dụng cao.</li>
+              </ul>
+            </td>
+          </tr>          
+          </tbody>
+        </table>
+      </div>
+    </form>
+  </div>
+</div>
+ <script layout:fragment="script">
+        $(document).ready(function(){
+        // search filter
+            $("#mySearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+            $('#btn-add').click(function(){
+              var submit = false;
+              Array.from($("input[type=checkbox]")).forEach((a, b) => {
+                        if (b != 0 && a.checked == true) {
+                            submit = true;
+                        }
+                    });
+              if(submit){
+                  $('#myForm').submit();
+              }else{
+                Swal.fire({
+                        position: 'center',
+                        icon: 'warning',
+                        title: "Bạn phải chọn câu hỏi",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }) 
+              }
+            })           
+            $("#all").click(() => {
+                if ($("#all").is(":checked")) {
+                    Array.from($("input[type=checkbox]")).forEach((a, b) => {
+                        if (b != 0) {
+                        a.checked = true;
+                        }
+                    });
+                    } else {
+                    Array.from($("input[type=checkbox]")).forEach((a, b) => {
+                        if (b != 0) a.checked = false;
+                    });
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

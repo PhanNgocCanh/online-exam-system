@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card" style="height:700px;" layout:fragment="content">
+  <form class="card-body px-3 overflow-auto shadow-lg bg-body rounded" th:action="@{/admin/room-setting}" method="POST">
+    <div class="email-action">
+      <p class="fs-5 fw-bold text-primary">Mã phòng thi: [[${room.roomId}]] - Tên phòng thi : [[${room.roomName}]] </p>
+      <input type="text" name="roomId" th:value="${room.roomId}" hidden>
+      <p class="fs-5 fw-bold text-primary">Kỳ thi: [[${exam.examName}]]</p>
+      <p class="fs-5 fw-bold text-primary">Môn học: [[${subject.subjectName}]]</p>
+      <p class="fw-bold">Lựa chọn đề thi</p>
+      <div class="form-group">
+        <select class="choices form-select multiple-remove" multiple="multiple" name="testId">
+          <option th:each="item:${tests}" th:value="${item.testId}"
+          th:selected="${#lists.contains(testExits,item.testId)}">
+            [[${item.testName}]]
+          </option>         
+        </select>
+      </div>
+    </div>
+    <div class="email-action mb-5">
+      <p class="fw-bold ">Lựa chọn lớp thi</p>
+      <div class="form-group">
+        <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 text-center" name="classId">
+          <option selected value="">-------- Lựa chọn lớp thi --------</option>
+          <option th:each="item:${clazzs}" th:value="${item.classId}"
+          th:selected="${classId == item.classId}">
+            [[${item.className}]]
+          </option>         
+      </select>
+      </div>
+    </div>
+    <button th:if="${active}" class="btn btn-success">Xác nhận</button>
+  </form>
+</div>
+<div layout:fragment="script">
+  <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
+  <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
+
+</div>
+</body>
+</html>

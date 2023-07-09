@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card" layout:fragment="content">
+  <div class="card-body px-5 overflow-auto shadow-lg rounded">
+    <div class="email-action">
+      <!-- action left start here -->
+      <div class="action-left d-flex align-items-center justify-content-between">
+        <!-- select All checkbox -->
+        <div class="alert alert-success">
+          Danh sách học sinh phòng thi : [[${room.roomName}]]
+        </div>
+        <a class="btn btn-success" th:href="@{/admin/print-result(roomId=${room.roomId})}">
+          <i class="fas fa-print me-2"></i>In kết quả
+        </a>
+      </div>
+    </div>
+    <!-- / action right -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover border" id="table">
+        <thead>
+        <tr>
+          <th class="text-center" style="width: 10%;">#</th>
+          <th class="text-center">Họ tên</th>
+          <th class="text-center" style="width: 20%;">Lớp</th>
+          <th class="text-center" style="width: 15%;">Điểm</th>
+          <th class="text-center" style="width: 15%;">Chi tiết</th>                   
+        </tr>
+        </thead>
+        <tbody id="myTable">
+        <tr th:each="item,start:${results}">
+          <td class="text-bold-500 py-1 text-center">[[${start.index}+1]]</td>
+          <td class="text-center py-1 fw-bold text-primary">[[${item.studentName}]]</td>         
+          <td class="text-center py-1">
+            <span class="badge badge-pill bg-light-info me-1">
+              [[${item.className}]]
+            </span>
+          </td>
+          <td class="text-bold-500 text-center py-1">
+            <span class="badge badge-pill bg-light-success me-1">
+             [[${item.mark}]]
+            </span>
+          </td>
+          <td class="text-center py-1">          
+            <a th:if="${item.mark>0}" class="btn btn-primary" th:href="@{/admin/view-test-answer(roomId=${room.roomId},studentId=${item.studentId})}"><i class="fas fa-info-circle"></i></a>
+            <a th:unless="${item.mark>0}" class="btn btn-danger" href="#"><i class="fas fa-exclamation-circle"></i></a>                             
+          </td>                   
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+          <h4 class="card-title">Tổng quan kết quả thi của phòng</h4>
+      </div>
+      <div class="card-body">
+          <canvas id="bar"></canvas>
+      </div>
+  </div>
+  </div>
+</div>
+ <div layout:fragment="script">
+  <script th:src="@{/assets/extensions/chart.js/Chart.min.js}"></script>
+  <script th:src="@{/assets/js/pages/ui-chartjs.js}"></script>
+  <script th:inline="javascript">
+    $(document).ready(function(){
+    // search filter
+        $("#mySearch").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        //
+        var chartColors = {
+            one: '#d71111',
+            two: '#d55513',
+            three: '#cd8f21',
+            four: '#cdc121',
+            five: '#2181cd',
+            six: '#21b4cd',
+            seven: '#21cda7',
+            eight: '#21cda7',
+            night: '#21cd41',
+            ten: '#34df04'
+        };
+        var ctxBar = document.getElementById("bar").getContext("2d");
+        var myData = [[${dataChart}]];       
+        var myBar = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ["Từ 0-1", "Từ 1-2", " Từ 2-3", "Từ 3-4", " Từ 4-5", " Từ 5-6", "Từ 6-7","Từ 7-8","Từ 8-9","Từ 9-10"],
+                datasets: [{
+                    label: 'Số lượng',
+                    backgroundColor: [chartColors.one, 
+                        chartColors.two,
+                        chartColors.three, 
+                        chartColors.four, 
+                        chartColors.five, 
+                        chartColors.six, 
+                        chartColors.seven,
+                        chartColors.eight,
+                        chartColors.night,
+                        chartColors.ten
+                        ],
+                    data: myData
+                }]
+            },
+            options: {
+                responsive: true,
+                barRoundness: 1,
+                title: {
+                    display: true,
+                    text: "Tổng quan kết quả của phòng thi"
+                },
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            suggestedMax: Math.max(...myData)+5,
+                            padding: 10,
+                        },
+                        gridLines: {
+                            drawBorder: false,
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        }
+                    }]
+                }
+            }
+        });
+    });
+  </script>
+
+ </div>
+</body>
+</html>

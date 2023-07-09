@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main/app1.css}">
+    <link rel="stylesheet"  th:href="@{/assets/css/main/custom.css}">
+    <link rel="shortcut icon"  th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon"  th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+    <link rel="stylesheet"  th:href="@{/assets/extensions/fontawesome-free/css/all.min.css}" />
+</head>
+<body>
+    <div class="">
+        <div class="my-4">
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="row d-flex justify-content-center align-items-center">
+                      <div class="col-12 col-xl-10">
+                        <div class="card px-5 pt-2" style="height: 900px;">
+                          <div class="p-3 border border-primary border-2 bg-body rounded-3">
+                            <div class="row">
+                              <div class="col-md-8 text-center">
+                                <h6>Đề thi : [[${test.testName}]]</h6>
+                                <p class="fs-6 mt-2 fw-bold">Họ và tên: ...........................</p>
+                                <p class="fs-6 mt-1">Lớp: ..................</p>
+                                <p class="fs-6 mb-1">Mã đề thi: [[${test.testId}]]</p>
+                                <p class="fs-6 fs- fw-bold">Thời gian làm bài: <span class="text-danger">[[${test.maxTime}]] phút</span></p>
+                              </div>
+                              <div class="col-md-4">
+                                <p class="fs-6 fw-bold">Điểm số (Học sinh không điền tại đây)</p>
+                                <p class="fs-6 fw-bold mb-1 text-start mb-4">Điểm : </p>
+                                <p class="fs-6 fw-bold mb-1 text-start">Nhận xét của giáo viên: </p>                               
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body">
+                            <p class="text-center text-primary fs-5 fw-bold mt-1 mb-0">Bài làm</p>
+                            <hr>
+                            <div class="question" th:each="item,start:${questions}">
+                              <div class="my-2 fw-bold">
+                                <u class="text-danger fs-6">Câu hỏi [[${start.index+1}]]: </u>
+                                <span class="ms-2" th:utext="${item.questionContent}"></span>
+                              </div>
+                              <div class="row">
+                                  <div class="form-check form-check mb-2 col-md-6" 
+                                  th:each="it,id:${item.answerDTOs}">
+                                    <label for="">[[${it.answerSymbol}]]. </label>
+                                    <label class="form-check-label" for="Success1">
+                                        [[${it.answerContent}]]                                       
+                                    </label>
+                                  </div>                                
+                              </div>
+                            </div>                                                      
+                          </div>
+                        </div>
+                      </div>                      
+                    </div>
+                  </div> 
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/assets/extensions/jquery/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+    <script>
+        $(document).ready(function(){
+            window.print();
+            location.href = 'http://localhost:8080/admin/test?page=1&limit=5';
+        })
+    </script>
+</body>
+</html>

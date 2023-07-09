@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.nz.net/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg rounded">
+    <div class="row">
+      <div class="col-md-12 pt-2 px-1">
+        <div class="px-4">
+          <p class="fs-6 mb-2 fw-bold">Tạo câu hỏi thủ công</p>
+          <p class="fs-6 mb-2 fw-bold">Môn học: 
+            <span class="fs-5 text-primary">[[${subject.subjectName}]]</span>
+            - Ngân hàng câu hỏi : 
+            <span class="fs-5 text-primary">[[${questionBank.questionBankName}]]</span>
+          </p>
+          <form action="" th:object="${question}" th:action="@{/admin/question/create-handle}" method="POST">
+              <p class="fs-6 mb-2 fw-bold">Bước 1: <span class="text-danger fs-6 fw-bold">(*)</span></p>
+              <p class="text-danger" th:if="${#fields.hasErrors('chapterId')}" th:errors="*{chapterId}"></p>
+              <div class="form-group mb-0 input-group mb-2 row">
+                  <select class="form-select rounded-3 mb-0 mx-2 px-2 py-2 mt-1 text-center col-md-6" th:field="*{chapterId}">
+                    <option selected value="0">----------------- Chương -----------------</option>
+                    <option th:each="item:${chapters}" th:value="${item.chapterId}">[[${item.chapterName}]]</option>
+                  </select>
+                  <select class="form-select rounded-3 mb-0 mx-2 px-2 py-2 mt-1 text-center col-md-6" th:field="*{level}">
+                    <option selected value="">---------------- Cấp độ ----------------</option>
+                    <option value="NB">Nhận biết</option>
+                    <option value="TH">Thông hiểu</option>
+                    <option value="VD">Vận dụng</option>
+                    <option value="VDC">Vận dụng cao</option>
+                  </select>
+              </div>
+              <p class="fs-6 mb-2 fw-bold">Bước 2: Nội dung câu hỏi <span class="text-danger fs-6 fw-bold">(*)</span></p>
+              <div class="form-group mb-0 input-group-lg">
+                  <div id="summernote"></div>                 
+                  <input type="text" hidden id="content" th:field="*{questionContent}">
+              </div>
+              <div class="fs-6 mb-2 fw-bold mt-2">Bước 3: Các câu trả lời và chọn đáp án đúng
+                <span class="text-danger fs-6 fw-bold">(* Lưu ý kết thúc các câu trả lời có dấu // để hệ thống nhận diện,
+                                                click đúp để xoá câu trả lời)</span>
+                <button class='btn btn-primary' type="button" id="add-answer">
+                  <i class="fas fa-plus me-2"></i>
+                  Thêm câu trả lời
+                </button>
+              </div>
+              <div class="form-group mb-0 input-group-lg" id="plain">
+    
+              </div>             
+              <div class="fs-6 mb-2 fw-bold mt-2">Bước 4: Giải thích (Nếu có)           
+                  <input type="text" id="explain-answer" hidden 
+                  class="form-control rounded-3 my-1" placeholder="Giải thích đáp án" th:field="*{explain}">
+              </div>
+              <input type="text" name="subjectId" th:value="${subject.subjectId}" hidden>
+              <button class='btn btn-primary font-bold mt-2' id="submit-answer" disabled>
+                  <i class="fas fa-paper-plane me-2"></i>
+                  Thêm mới
+              </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div layout:fragment="script">
+  <script th:src="@{/assets/extensions/summernote/summernote-lite.min.js}"></script>
+  <script th:src="@{/assets/js/pages/summernote.js}"></script>
+  <script>
+        $(document).ready(function(){
+          if($('#content').val()!=""){
+            $("#summernote").summernote("code", $('#content').val());
+          }
+        })
+        $('#summernote').on('summernote.keyup', function(we, e) {
+                var html = $("#summernote").summernote("code");
+                $('#content').val(html);
+        });
+        $('#add-answer').click(function(){
+            var num = $('*[id=answer]').length;           
+            $('#explain-answer').removeAttr('hidden')
+            $('#submit-answer').removeAttr('disabled');           
+            
+            $('#plain').append('<div class="d-flex flex-row" ondblclick="deleteX(this)"><input type="text" id="answer" name="answer" onfocusout="addEnding(this)"'+
+            ' onfocusin="removeEnding(this)"'+
+            'class="form-control rounded-3 my-1" placeholder="'+`Câu trả lời số: ${num+1}`+'">'+
+            '<div class="form-check d-flex align-items-center"><input name="position" type="radio" class="ms-1 form-check-input" value="'+`${num}`+'"></div></div>');
+        });
+        function removeEnding(ba){
+            $(ba).val($(ba).val().replace("//",""));           
+        }
+        function addEnding(ba){
+          if($(ba).val()!='') $(ba).val($(ba).val()+"//");
+        }
+        function deleteX(ba){
+            $(ba).remove();
+            var num = $('*[id=answer]').length;            
+            if(num == 0) $('#submit-answer').attr('disabled',true);
+        };
+    </script>
+</div>
+</body>
+</html>

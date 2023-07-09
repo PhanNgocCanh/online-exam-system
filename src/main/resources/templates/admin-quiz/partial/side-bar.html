@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="sidebar" class="active" th:fragment="side-bar">
+  <div class="sidebar-wrapper active app-top">
+    <div class="sidebar-menu">
+      <ul class="menu my-1">
+        <li class="sidebar-title">Bảng điều khiển</li>
+
+        <li
+                class="sidebar-item  has-sub">
+          <a href="#" class='sidebar-link'>
+            <i class="fas fa-laptop-house"></i>
+            <span>Câu hỏi</span>
+          </a>
+          <ul class="submenu ">
+            <li class="submenu-item ">
+              <a th:href="@{/admin/question?page=1&limit=10}">Tất cả câu hỏi</a>
+            </li>
+            <li class="submenu-item ">
+              <a th:href="@{/admin/question-bank}">Ngân hàng câu hỏi</a>
+            </li>
+          </ul>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/admin/test?page=1&limit=5}" class='sidebar-link'>
+            <i class="fas fa-book"></i>
+            <span>Quản lý đề thi</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/admin/student?page=1&limit=10}" class='sidebar-link'>
+            <i class="fas fa-user-graduate"></i>
+            <span>Quản lý học sinh</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/admin/teacher}" class='sidebar-link'>
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Quản lý giáo viên</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/admin/subject}" class='sidebar-link'>
+            <i class="fas fa-table"></i>
+            <span>Quản lý môn học</span>
+          </a>
+        </li>       
+        <li class="sidebar-item">
+          <a th:href="@{/admin/exam}" class='sidebar-link'>
+            <i class="fas fa-pager"></i>
+            <span>Quản lý kỳ thi</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/admin/exam-result?page=1&limit=5}" class='sidebar-link'>
+            <i class="fas fa-poll"></i>
+            <span>Kết quả thi</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

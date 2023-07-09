@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{client-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card" layout:fragment="content">
+  <div class="card-body px-5 overflow-auto shadow-lg bg-body rounded">
+    <h4 class="text-danger">Nội quy phòng thi</h4>
+    <p class="fs-6 fw-bold">Hôm nay, Ngày <span id="date"></span> Tháng <span id="month"></span> Năm <span id="year"></span></p>
+    <hr>
+    <p class="fs-6 fw-bold">Phòng thi : [[${room.roomName}]]</p>
+    <p class="fs-6 fw-bold">Kỳ thi : [[${exam.examName}]]</p>
+    <p class="fs-6 fw-bold">Môn thi : [[${subject.subjectName}]]</p>
+    <p class="fs-6 fw-bold">Ngày thi : [[${room.formatTimeStart}]] - [[${room.formatTimeFinish}]]</p>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <p class="fs-5 fw-bold text-danger">Lưu ý trước khi làm bài !</p>
+        <p>Thời gian sẽ được tính khi bạn bấm nút bắt đầu !</p>
+        <p>Khi hết giờ làm bài hệ thống sec tự động nộp bài</p>
+        <p>Không mở bất kỳ tab nào khác trong quá trình làm bài</p>
+        <p>Mọi vi phạm sẽ khiến kết quả bài thi không được chấp nhận</p>
+        <a class="btn btn-success fw-bold" th:href="@{/test}"><i class="fas fa-hourglass-start me-2"></i> Bắt đầu</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script layout:fragment="script">
+   $(document).ready(function(){
+     var date = new Date();
+     $('#date').text(date.getDate());
+     $('#month').text(date.getMonth()+1);
+     $('#year').text(date.getFullYear());
+   })
+</script>
+</body>
+</html>

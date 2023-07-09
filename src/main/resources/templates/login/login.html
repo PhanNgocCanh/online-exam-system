@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đồ án tốt nghiệp</title>
+  <link rel="stylesheet" th:href="@{/assets/css/main/app1.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/main/custom.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/main/login.css}">
+  <link rel="stylesheet" th:href="@{/assets/extensions/fontawesome-free/css/all.min.css}" />
+  <link rel="stylesheet" th:href="@{/assets/extensions/toastify-js/src/toastify.css}">
+</head>
+<body>
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+             class="img-fluid" alt="Sample image">
+      </div>
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <input th:if="${param.fail}" type="text" id="loginSuccess" value="fail" hidden>
+        <input th:unless="${param.fail}" type="text" id="loginSuccess" value="success" hidden>
+        <form th:action="@{/j_spring_security_check}" method="POST">
+          <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+            <p class="lead fw-bold fs-4 mb-0 me-3 text-primary">Website thi trắc nghiệm trực tuyến</p>
+          </div>
+
+          <div class="divider d-flex align-items-center my-4">
+          </div>
+
+          <!-- Email input -->
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form3Example3">Tài khoản</label>
+            <input type="text" name="email" class="form-control form-control-lg"
+                   placeholder="VD : phanngoccanh@gmail.com" />
+          </div>
+          <!-- Password input -->
+          <div class="form-outline mb-3">
+            <label class="form-label" for="form3Example4">Mật khẩu</label>
+            <input type="password" name="password" class="form-control form-control-lg"
+                   placeholder="Nhập mật khẩu" />
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="#" class="text-body">Quên mật khẩu?</a>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button type="submit" class="btn btn-primary btn-lg"
+                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Đăng nhập</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <div
+          class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+    <!-- Copyright -->
+    <div class="text-white mb-3 mb-md-0">
+      Đồ án tốt nghiệp Phan Ngọc Cảnh - 191202988
+    </div>
+    <!-- Copyright -->
+  </div>
+</section>
+<script th:src="@{/assets/extensions/jquery/jquery.min.js}"></script>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/extensions/toastify-js/src/toastify.js}"></script>
+<script>
+  $(document).ready(function(){
+    if($('#loginSuccess').val()=='fail'){
+      Toastify({
+          text: "Sai tên đăng nhập hoặc mật khẩu ! ",
+          duration: 3000,
+          close:true,
+          gravity:"top",
+          position: "center",
+          backgroundColor: "#e24211",
+      }).showToast();
+    }
+  })
+</script>
+</body>
+</html>

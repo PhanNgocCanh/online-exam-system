@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card mt-4" layout:fragment="content">
+  <div class="card-body px-5 shadow rounded-3">    
+    <a class='btn btn-primary font-bold mt-2 mb-2 float-end' th:href="@{/admin/student-excel}">
+      <i class="fas fa-file-excel me-2"></i> Thêm từ excel
+    </a>
+    <button class='btn btn-primary font-bold mt-2 mb-2 me-2 float-end' type="button" data-bs-toggle="modal"data-bs-target="#inlineForm">
+      <i class="fas fa-plus me-2"></i> Thêm mới
+    </button>
+    <form class="action-right mb-2" th:action="@{/admin/student}">
+      <!-- search bar  -->
+      <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 mt-1 text-center" name="classId">
+        <option selected value="0">----------- Lựa chọn lớp  -----------</option>
+        <option th:each="item:${clazzs}" th:value="${item.classId}"
+        th:selected="${param.classId!=null} ? (${param.classId[0]==''+item.classId}):'false'">
+          [[${item.className}]]
+        </option>         
+      </select>  
+      <input type="text" name="page" th:value="${page}" hidden>
+      <input type="text" name="limit" th:value="${limit}" hidden>   
+      <button class='btn btn-primary font-bold py-2 mb-1'><i class="fas fa-search"></i> Tìm kiếm</button>
+    </form>
+    <div class="email-fixed-search flex-grow-1 my-2">
+      <div class="form-group mb-0 has-icon-right input-group input-group-lg">
+        <input type="text" id="mySearch" class="form-control rounded-3 border-opacity-10" placeholder="Tìm kiếm ...">
+        <div class="form-control-icon mt-1 me-2">
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 pt-2 px-2">
+        <div class="table-responsive">
+          <table class="table table-lg table-hover" id="table" th:if="${totalPage>0}">
+            <thead>
+            <tr>
+              <th class="text-center" style="width: 2%;">Mã</th>
+              <th class="text-center">Tên học sinh</th>
+              <th class="text-center">Lớp</th>
+              <th class="text-center" style="width: 30%;">Giới tính-Ngày sinh-Email</th>
+              <th class="text-center" style="width: 20%;">Thao tác</th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+                <tr th:each="item,start:${students}">
+                    <td class="text-bold-500 py-1 text-center">[[${start.index+1}]]</td>
+                    <td class="text-bold-500 py-1 text-center">[[${item.fullName}]]</td>
+                    <td class="text-bold-500 py-1 text-center">[[${item.className}]]</td>
+                    <td class="py-1">
+                      <ul>
+                        <li th:if="${item.gender==0}">Giới tính: Nam</li>
+                        <li th:unless="${item.gender==0}">Giới tính: Nữ</li>
+                        <li>Ngày sinh: [[${item.birthday}]]</li>
+                        <li>Email: [[${item.email}]]</li>
+                      </ul>
+                    </td>
+                    <td class="text-bold-500 py-1 text-center">
+                      <a th:href="@{/admin/update-student/{studentId}(studentId=${item.studentId})}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                      <a href="" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>           
+            </tbody>
+          </table>
+          <p th:unless="${totalPage>0}" class="text-center fs-5">Không tìm thấy kết quả !</p>           
+          <nav th:if="${totalPage>0}" aria-label="Page navigation example">
+              <ul class="pagination pagination-primary">
+                  <li class="page-item" th:classappend="${page>1}?'':'disabled'">
+                      <a class="page-link" th:href="@{/admin/student(classId=${classId},page=1,limit=${limit})}">
+                          <span aria-hidden="true">First</span>
+                      </a>
+                  </li>
+                  <li class="page-item" th:classappend="${page>1}?'':'disabled'">
+                      <a class="page-link" th:href="@{/admin/student(classId=${classId},page=${page-1},limit=${limit})}">
+                          <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                      </a>
+                  </li>
+                  <li th:each="item:${#numbers.sequence(1,totalPage)}" 
+                  class="page-item" th:classappend="${item==page} ? 'active':''">
+                      <a class="page-link" th:if="${item==page-1||item==page||item==page+1}"
+                        th:href="@{/admin/student(classId=${classId},page=${item},limit=${limit})}">[[${item}]]</a>
+                  </li>                    
+                  <li class="page-item" th:classappend="${page<totalPage}?'':'disabled'">
+                      <a class="page-link" th:href="@{/admin/student(classId=${classId},page=${page+1},limit=${limit})}">
+                          <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                      </a>
+                  </li>
+                  <li class="page-item" th:classappend="${page<totalPage}?'':'disabled'">
+                      <a class="page-link" th:href="@{/admin/student(classId=${classId},page=${totalPage},limit=${limit})}">
+                          <span aria-hidden="true">Last</span>
+                      </a>
+                  </li>
+              </ul>
+          </nav>
+          <p th:if="${totalPage>0}">Trang : [[${page}]]/[[${totalPage}]]</p>
+        <input type="hidden" id="status" th:value="${status}?${status}:''">
+        <input type="hidden" id="message" th:value="${message}?${message}:''">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel33">Thêm học sinh</h4>
+          <button type="button" class="close" data-bs-dismiss="modal"
+                  aria-label="Close">
+            <i data-feather="x"></i>
+          </button>
+        </div>
+        <form action="#" th:object="${student}" th:action="@{/admin/student}" method="POST">
+          <div class="modal-body">
+            <input th:if="*{studentId!=0}" type="text" class="form-control" th:field="*{studentId}" hidden>
+            <label>Họ và tên: </label>
+            <div class="form-group">
+              <input type="text" placeholder="Họ và tên"
+                     class="form-control" th:field="*{fullName}">
+            </div>
+            <label>Lớp: </label>
+            <div class="form-group">
+              <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 mt-1 text-center" th:field="*{classId}">
+                <option selected value="0">--- Lớp ---</option>
+                <option th:each="item:${clazzs}" th:value="${item.classId}">[[${item.className}]]</option>             
+              </select>
+            </div>
+            <label>Giới tính: </label>
+            <div class="form-group">
+              <input type="radio" th:field="*{gender}" value="0">Nam
+              <input type="radio" th:field="*{gender}" value="1">Nữ
+            </div>
+            <label>Ngày sinh: </label>
+            <div class="form-group">
+              <input type="date" th:field="*{birthday}" class="form-control">
+            </div>
+            <label>Email: </label>
+            <div class="form-group">
+              <input type="email" placeholder="Email Address"
+                     class="form-control" th:field="*{email}">
+            </div>
+          </div>
+          <button th:if="*{studentId!=0}" class="btn btn-primary float-end me-3 mb-2">Cập nhật</button>
+          <button th:unless="*{studentId!=0}" class="btn btn-primary float-end me-3 mb-2">Tạo mới</button>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light-secondary"
+                  data-bs-dismiss="modal">
+            <i class="bx bx-x d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script layout:fragment="script">
+  $(document).ready(function(){
+  // search filter
+      $("#mySearch").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#myTable tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          });
+      });
+      if($('#status').val()!=""){
+          Swal.fire({
+              position: 'center',
+              icon: $('#status').val(),
+              title: $('#message').val(),
+              showConfirmButton: false,
+              timer: 1500
+          }) 
+      }  
+  });
+
+</script>
+</body>
+</html>

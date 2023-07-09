@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg rounded">
+    <form class="row" th:object="${test}" th:action="@{/admin/test/create-handle}" method="POST">
+      <div class="col-md-12 pt-2 px-1">
+        <div class="px-4">
+          <p class="fs-6 mb-2 fw-bold">Tạo đề thi thủ công thủ công</p>
+          <p class="fs-6 mb-2 fw-bold">Môn học : <span class="fs-5 text-primary">[[${subject.subjectName}]]</span></p>
+          <div class="form-group mb-0 input-group mb-2 row">
+            <input type="text" th:field="*{subjectId}" hidden>
+            <div class="col-md-6">
+              <label>Tên đề thi <span class="text-danger">(*)</span></label>
+              <input type="text" th:field="*{testName}" id="nameTest" class="form-control rounded-3" placeholder="Ví dụ: Đề thi tiếng anh 12">
+            </div>            
+            <div class="col-md-6">
+              <label>Điểm tối đa <span class="text-danger">(*)</span></label>
+              <input type="text" th:field="*{maxScore}" id="mark" class="form-control rounded-3" placeholder="Nhập số điểm VD : 10,20">
+            </div>
+            <div class="col-md-6">
+              <label>Thời gian làm bài <span class="text-danger">(*)</span></label>
+              <input type="text" th:field="*{maxTime}" id="minute" class="form-control rounded-3" placeholder="Nhập số phút VD : 60,100">
+            </div>
+          </div>
+        </div>
+        <button class='btn btn-primary font-bold mt-2 ms-3' type="submit" id="test">
+          <i class="fas fa-paper-plane me-2"></i>
+          Tạo đề thi
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+</body>
+</html>

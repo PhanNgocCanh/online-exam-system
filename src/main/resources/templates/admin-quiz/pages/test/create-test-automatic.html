@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg rounded">
+    <form class="row" action="#" th:object="${test}" th:action="@{/admin/test/create-automatic}" method="POST">
+      <div class="col-md-12 pt-2 px-1">
+        <div class="px-4">
+          <p class="fs-6 mb-2 fw-bold">Tạo đề thi tự động. Môn học : <span class="fs-5 text-primary">[[${subject.subjectName}]]</span></p>
+          <p class="fs-6 mb-2 fw-bold text-danger">* Lưu ý nếu có nhiều đề thi thì tên đề
+            thi = tên đề thi + ' ver_' + số thứ tự đề</p>
+          <div class="form-group mb-0 input-group mb-2 row">
+            <input type="text" name="subjectId" th:value="${subject.subjectId}" hidden>
+            <div class="col-md-6">
+              <label for="">Tên đề thi <span class="text-danger">(*)</span></label>
+              <input type="text" th:field="*{testName}" class="form-control rounded-3" placeholder="Ví dụ: Đề thi tiếng anh 12">
+            </div>
+            <div class="col-md-6 mb-2">
+              <label for="">Số đề thi <span class="text-danger">(*)</span></label>
+              <input type="text" th:field="*{numOfTest}" class="form-control rounded-3" placeholder="Ví dụ: 1">
+            </div>
+            <div class="col-md-6">
+              <label for="">Điểm tối đa <span class="text-danger">(*)</span></label>
+              <input type="text" th:field="*{maxScore}" class="form-control rounded-3" placeholder="Nhập số điểm VD : 10,20">
+            </div>
+            <div class="col-md-6">
+              <label for="">Thời gian làm bài <span class="text-danger">(* Tính bằng phút)</span></label>
+              <input type="text" th:field="*{maxTime}" class="form-control rounded-3" placeholder="Nhập số phút VD : 60,100">
+            </div>
+            <hr class="mt-4">
+            <p class="fs-6 mb-2 fw-bold mt-1">Chi tiết câu hỏi</p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-lg table-hover" id="table">
+                  <thead>
+                  <tr>                 
+                    <th class="text-center" style="width: 30%;">Chương môn học</th>
+                    <th class="text-center" style="width: 10%">Nhận biết</th>
+                    <th class="text-center" style="width: 10%;">Thông hiểu</th>
+                    <th class="text-center" style="width: 10%;">Vận dụng</th>
+                    <th class="text-center" style="width: 10%;">Vận dụng cao</th>
+                  </tr>
+                  </thead>
+                  <tbody id="myTableResult">
+                    <tr th:each="item,start:*{rowTestAutomatic}">
+                        <input type="text" th:field="*{rowTestAutomatic[__${start.index}__].chapterId}" hidden>                 
+                        <td class="text-center p-1">
+                          <p class="mb-1">[[*{rowTestAutomatic[__${start.index}__].chapterName}]]</p>
+                        </td>
+                        <td class="text-bold-500 text-center p-1">
+                          <div class="row">
+                            <div class="col-md-8 pe-0">
+                              <input type="number" id="nb"
+                                class="form-control text-end rounded-3 me-0"
+                                th:field="*{rowTestAutomatic[__${start.index}__].nbCount}"
+                                th:max="*{rowTestAutomatic[__${start.index}__].totalNb}"
+                                min="0"
+                                th:disabled="*{rowTestAutomatic[__${start.index}__].totalNb==0}">
+                            </div>
+                            <label class="col-md-3 p-0" for="">/[[*{rowTestAutomatic[__${start.index}__].totalNb}]]</label>
+                          </div>
+                        </td>
+                        <td class="text-bold-500 text-center p-1">
+                          <div class="row">
+                            <div class="col-md-8 pe-0">
+                              <input type="number" id="th"
+                                class="form-control text-end rounded-3 me-0"
+                                th:field="*{rowTestAutomatic[__${start.index}__].thCount}"
+                                th:max="*{rowTestAutomatic[__${start.index}__].totalTh}"
+                                min="0"
+                                th:disabled="*{rowTestAutomatic[__${start.index}__].totalTh==0}">
+                            </div>
+                            <label class="col-md-3 p-0" for="">/[[*{rowTestAutomatic[__${start.index}__].totalTh}]]</label>
+                          </div>
+                        </td>
+                        <td class="text-bold-500 text-center p-1">
+                          <div class="row">
+                            <div class="col-md-8 pe-0">
+                              <input type="number" id="vd"
+                                class="form-control text-end rounded-3 me-0"
+                                th:field="*{rowTestAutomatic[__${start.index}__].vdCount}"
+                                th:max="*{rowTestAutomatic[__${start.index}__].totalVd}"
+                                min="0"
+                                th:disabled="*{rowTestAutomatic[__${start.index}__].totalVd==0}">
+                            </div>
+                            <label class="col-md-3 p-0" for="">/[[*{rowTestAutomatic[__${start.index}__].totalVd}]]</label>
+                          </div>
+                        </td>
+                        <td class="text-bold-500 text-center p-1">
+                          <div class="row">
+                            <div class="col-md-8 pe-0">
+                              <input type="number" id="vdc"
+                                class="form-control text-end rounded-3 me-0"
+                                th:field="*{rowTestAutomatic[__${start.index}__].vdcCount}"
+                                th:max="*{rowTestAutomatic[__${start.index}__].totalVdc}"
+                                min="0"
+                                th:disabled="*{rowTestAutomatic[__${start.index}__].totalVdc==0}">
+                            </div>
+                            <label class="col-md-3 p-0" for="">/[[*{rowTestAutomatic[__${start.index}__].totalVdc}]]</label>
+                          </div>
+                        </td>
+                    </tr>             
+                    <tr>
+                      <td class="text-bold-500 py-2 text-center p-1 fw-bold">
+                        Tổng số câu hỏi <span id="all-total" class="text-danger">0</span>
+                      </td>
+                      <td class="text-bold-500 text-center p-1">
+                        <span id="total-nb">0</span>
+                      </td>
+                      <td class="text-bold-500 text-center p-1">
+                        <span id="total-th">0</span>
+                      </td>
+                      <td class="text-bold-500 text-center p-1">
+                        <span id="total-vd">0</span>
+                      </td>
+                      <td class="text-bold-500 text-center p-1">
+                        <span id="total-vdc">0</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+        <button class='btn btn-primary font-bold mt-2 ms-3' id="test">
+          <i class="fas fa-paper-plane me-2"></i>
+          Tạo đề thi
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+<script layout:fragment="script">
+        $('*[id=nb]').change(function(){
+            var total = 0;
+            var allTotal = 0;
+            $('*[id=nb]').each(function(index,e){
+                    total += parseInt($(e).val());
+            });
+            $('#total-nb').text(total);
+            $('*[id*=total-]').each(function(index,e){
+                    allTotal += parseInt($(e).text());
+            });
+            $('#all-total').text(allTotal);
+        });
+        $('*[id=th]').change(function(){
+            var total = 0;
+            var allTotal = 0;
+            $('*[id=th]').each(function(index,e){
+                    total += parseInt($(e).val());
+            });
+            $('#total-th').text(total);
+            $('*[id*=total-]').each(function(index,e){
+                    allTotal += parseInt($(e).text());
+            });
+            $('#all-total').text(allTotal);
+        });
+        $('*[id=vd]').change(function(){
+            var total = 0;
+            var allTotal = 0;
+            $('*[id=vd]').each(function(index,e){
+                    total += parseInt($(e).val());
+            });
+            $('#total-vd').text(total);
+            $('*[id*=total-]').each(function(index,e){
+                    allTotal += parseInt($(e).text());
+            });
+            $('#all-total').text(allTotal);
+        });
+        $('*[id=vdc]').change(function(){
+            var total = 0;
+            var allTotal = 0;
+            $('*[id=vdc]').each(function(index,e){
+                    total += parseInt($(e).val());
+            });
+            $('#total-vdc').text(total);
+            $('*[id*=total-]').each(function(index,e){
+                    allTotal += parseInt($(e).text());
+            });
+            $('#all-total').text(allTotal);
+        });
+ </script>
+</body>
+</html>

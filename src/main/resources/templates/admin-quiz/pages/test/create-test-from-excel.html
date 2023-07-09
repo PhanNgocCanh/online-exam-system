@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg rounded">
+    <div class="row">
+      <div class="col-md-12 pt-2 px-1">
+        <div class="px-4">
+          <p class="fs-6 mb-2 fw-bold">Tạo đề thi từ file Excel</p>
+          <p class="fs-6 mb-2 fw-bold">Môn học : <span class="fs-5 text-primary">[[${subject.subjectName}]]</span></p>
+          <a class="btn btn-success mb-2" th:href="@{/admin/download-template-test}">
+            <i class="fas fa-download me-2"></i> Tải file mẫu
+          </a>
+          <form action="" th:action="@{/admin/test/create-from-excel}" th:object="${test}" method="POST" enctype="multipart/form-data">
+              <div class="form-group mb-0 input-group mb-2 row">
+                <input type="text" th:field="*{subjectId}" hidden>
+                <div class="col-md-6">
+                  <label>Tên đề thi <span class="text-danger">(*)</span></label>
+                  <input type="text" th:field="*{testName}" id="nameTest" 
+                  class="form-control rounded-3" placeholder="Ví dụ: Đề thi tiếng anh 12">
+                  <p class="text-danger" th:if="${#fields.hasErrors('testName')}" th:errors="*{testName}"></p>
+                </div>
+                <div class="col-md-6">
+                  <select class="form-select rounded-3 mb-0 mx-2 mt-4 px-2 py-2 mt-1 text-center" th:field="*{chapterId}">
+                      <option selected value="0">-------------------------------------- Lựa chọn chương --------------------------------------</option>
+                      <option th:each="item:${chapters}" th:value="${item.chapterId}">[[${item.chapterName}]]</option>                                                          
+                  </select>
+                  <p class="text-danger" th:if="${#fields.hasErrors('chapterId')}" th:errors="*{chapterId}"></p>
+                </div>                                                    
+                <div class="col-md-6">
+                  <label>Điểm tối đa <span class="text-danger">(*)</span></label>
+                  <input type="text" th:field="*{maxScore}" class="form-control rounded-3" placeholder="Nhập số điểm VD : 10,20">
+                </div>
+                <div class="col-md-6 mt-2">
+                  <label>Thời gian làm bài <span class="text-danger">(*)</span></label>
+                  <input type="text" th:field="*{maxTime}" class="form-control rounded-3" placeholder="Nhập số phút VD : 60,100">
+                </div>
+                <div class="col-md-6 mt-2">
+                  <label>File câu hỏi <span class="text-danger">(* Định dạng file .xlsx,.xsl)</span></label>
+                  <input type="file" name="file" id="fileName" class="form-control rounded-3">
+                  <input type="text" th:field="*{fileName}" hidden>
+                  <p class="text-danger" th:if="${#fields.hasErrors('fileName')}" th:errors="*{fileName}"></p>
+                </div>
+              </div>
+              <button class='btn btn-primary font-bold mt-2 ms-0' type="submit">
+                <i class="fas fa-paper-plane me-2"></i>
+                Tạo đề thi
+              </button>
+          </form>
+        </div>        
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

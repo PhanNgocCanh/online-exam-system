@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{client-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="card" layout:fragment="content">
+  <div class="card-body px-5 overflow-auto shadow-lg bg-body rounded">
+    <div class="email-action">
+      <!-- action left start here -->
+      <div class="action-left">
+        <p class="fs-5 fw-bold text-primary">Lịch thi cá nhân của bạn</p>
+        <!-- select All checkbox -->
+        <div class="btn btn-primary me-3 mb-2">
+          Phòng thi sắp tới ( [[${rooms.size()}]])
+        </div>
+      </div>
+      <!-- action left end here -->
+
+      <!-- action right start here -->
+    
+    </div>
+    <!-- / action right -->
+    <div class="table-responsive">
+      <table class="table table-lg table-hover overflow-x" id="table">
+        <thead>
+        <tr>
+          <th class="text-center" style="width: 10%;">Mã phòng</th>
+          <th class="text-center">Tên phòng thi</th>
+          <th class="text-center" style="width: 12%;">Cán bộ coi thi</th>
+          <th class="text-center" style="width: 12%;">Kỳ thi</th>
+          <th class="text-center" style="width: 12%;">Môn thi</th>
+          <th class="text-center" style="width: 10%;">Ngày thi</th>       
+          <th class="text-center" style="width: 13%;">Vào phòng thi</th>
+        </tr>
+        </thead>
+        <tbody id="myTable">
+        <tr th:each="item:${rooms}">
+          <td class="text-bold-500 p-1 text-center">[[${item.roomId}]]</td>  
+          <td class="text-bold-500 p-1 text-center">[[${item.roomName}]]</td>
+          <td class="text-bold-500 text-center p-1" th:each="tch:${teachers}" th:if="${tch.teacherId==item.teacherId}">
+            <span class="badge badge-pill bg-light-success me-1">[[${tch.fullName}]]</span>
+          </td>
+          <td class="text-center p-1" th:each="ex:${exams}" th:if="${ex.examId==item.examId}">
+            <span class="badge badge-pill bg-light-info me-1">[[${ex.examName}]]</span>
+          </td>
+          <td class="text-bold-500 text-center p-1" th:each="sb:${subjects}" th:if="${sb.subjectId==item.subjectId}">
+            <span class="badge badge-pill bg-light-danger me-1">[[${sb.subjectName}]]</span>
+          </td>
+          <td class="text-center p-1">
+            <ul>
+              <li class="badge badge-pill bg-light-warning me-1 mb-2">[[${item.formatTimeStart}]]</li>
+              <li class="badge badge-pill bg-light-warning me-1">[[${item.formatTimeFinish}]]</li>
+            </ul>          
+          </td>       
+          <td class="text-bold-500 text-center p-1">
+            <a class="btn btn-success fw-bold rounded-4" th:href="@{/rule-exam/{roomId}(roomId=${item.roomId})}">Vào thi <i class="fas fa-play-circle ms-1"></i></a>
+          </td>
+
+        </tr>        
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

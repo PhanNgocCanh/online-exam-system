@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div class="card" layout:fragment="content">
+    <div class="card-body px-3 overflow-auto shadow-lg rounded">
+        <div class="row">
+            <!-- action left start here -->
+            <div class="action-left d-flex justify-content-end align-items-center float-end">
+                <!-- select All checkbox -->
+                <a class="btn btn-success me-1 mb-2" id="add-new" type="button" data-bs-toggle="modal"
+                data-bs-target="#inlineForm">
+                    <i class="fas fa-plus me-2"></i>
+                    Thêm mới
+                </a>
+                <a class="btn btn-success me-1 mb-2" id="upload-new" type="button" data-bs-toggle="modal"
+                data-bs-target="#inlineForm">
+                    <i class="fas fa-folder-open me-2"></i>
+                    Tải câu hỏi lên
+                </a>
+            </div>           
+            <!-- action left end here -->
+            
+            <!-- action right start here -->
+        </div>
+        <form class="my-2 row" th:action="@{/admin/question}">
+            <div class="form-group mb-0 col-md-3 px-1">
+                <input th:if="${param.keyword!=null}" type="text" name="keyword" th:value="${param.keyword[0]}" class="form-control rounded-3 py-2 px-2" placeholder="Tìm kiếm ...">
+                <input th:unless="${param.keyword!=null}" type="text" name="keyword" class="form-control rounded-3 py-2 px-2" placeholder="Tìm kiếm ...">                  
+            </div>
+            <!-- search bar  -->
+           
+            <div class="col-md-5 form-group">
+                <select class="choices form-select" name="chapterId">
+                    <option value="">---------------------- Chọn chương môn học ---------------------</option>                   
+                    <optgroup th:each="subject:${subjectChapters}" th:label="${subject.subjectName}">
+                        <option th:each="chapter:${subject.chapters}" 
+                        th:value="${chapter.chapterId}" th:selected="${param.chapterId!=null}?(${param.chapterId[0]==''+chapter.chapterId}):'false'">[[${chapter.chapterName}]]</option>                       
+                    </optgroup>                   
+                </select>
+            </div>
+            <div class="col-md-2 px-1">
+                <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 text-center" name="level">
+                    <option selected value="">-------- Cấp độ --------</option>
+                    <option value="NB" th:selected="${param.level!=null}?(${param.level[0]=='NB'}):'false'">Nhận biết</option>
+                    <option value="TH" th:selected="${param.level!=null}?(${param.level[0]=='TH'}):'false'">Thông hiểu</option>
+                    <option value="VD" th:selected="${param.level!=null}?(${param.level[0]=='VD'}):'false'">Vận dụng</option>
+                    <option value="VDC" th:selected="${param.level!=null}?(${param.level[0]=='VDC'}):'false'">Vận dụng cao</option>
+                </select>
+            </div>
+            <input type="text" name="page" th:value="${page}" hidden>
+            <input type="text" name="limit" th:value="${limit}" hidden>
+            <div class="col-md-2 px-1">
+                <button class='btn btn-xl btn-primary font-bold py-2 mb-1'><i class="fas fa-search"></i> Tìm kiếm</button>
+            </div>
+        </form>
+        <!-- / action right -->
+        <div class="table-responsive">
+            <table class="table table-lg table-hover" id="table" th:if="${totalPage>0}">
+                <thead>
+                <tr>
+                    <th class="text-center" style="width: 1%;">#</th>
+                    <th class="text-center">Nội dung</th>
+                    <th class="text-center" style="width: 16%;">Môn học</th>
+                    <th class="text-center" style="width: 15%;">Cấp độ</th>
+                    <th class="text-center" style="width: 20%;">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody id="myTable">
+                    <tr th:each="item,start:${questions}">
+                        <td class="text-bold-500 py-2 text-center">[[${page-1}*${limit}+${start.index+1}]]</td>
+                        <td class="p-2 fw-bold">
+                            <p th:utext="${item.questionContent}"></p>
+                        </td>
+                        <td class="text-bold-500 p-2 text-center">
+                            <p class="">[[${item.subjectName}]]</p>
+                        </td>
+                        <td class="text-center p-2">
+                            <p th:if="${item.level=='NB'}">Nhận biết</p>
+                            <p th:if="${item.level=='TH'}">Thông hiểu</p>
+                            <p th:if="${item.level=='VD'}">Vận dụng</p>
+                            <p th:if="${item.level=='VDC'}">Vận dụng cao</p>
+                        </td>
+                        <td class="text-center p-2">
+                            <a class="btn btn-warning" 
+                            th:href="@{/admin/update-question/{questionId}(questionId=${item.questionId})}">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a class="btn btn-success" href="exam-rule.html"><i class="fas fa-eye"></i></a>
+                            <a class="btn btn-danger" th:href="@{/admin/delete-question/{questionId}(questionId=${item.questionId})}">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+
+                    </tr>                                  
+                </tbody>
+            </table>
+            <p th:unless="${totalPage>0}" class="text-center fs-5">Không tìm thấy kết quả !</p>
+            <input type="hidden" id="status" th:value="${status}?${status}:''">
+            <input type="hidden" id="message" th:value="${message}?${message}:''">
+            <nav th:if="${totalPage>0}" aria-label="Page navigation example">
+                <ul class="pagination pagination-primary">
+                    <li class="page-item" th:classappend="${page>1}?'':'disabled'">
+                        <a class="page-link" th:href="@{/admin/question(chapterId=${chapterId},level=${level},keyword=${keyword},
+                        page=1,limit=${limit})}">
+                            <span aria-hidden="true">First</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${page>1}?'':'disabled'">
+                        <a class="page-link" th:href="@{/admin/question(chapterId=${chapterId},level=${level},keyword=${keyword},
+                        page=${page-1},limit=${limit})}">
+                            <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                        </a>
+                    </li>
+                    <li th:each="item:${#numbers.sequence(1,totalPage)}" 
+                    class="page-item" th:classappend="${item==page} ? 'active':''">
+                        <a class="page-link" th:if="${item==page-1||item==page||item==page+1}"
+                         th:href="@{/admin/question(chapterId=${chapterId},level=${level},keyword=${keyword},
+                         page=${item},limit=${limit})}">[[${item}]]</a>
+                    </li>                    
+                    <li class="page-item" th:classappend="${page<totalPage}?'':'disabled'">
+                        <a class="page-link" th:href="@{/admin/question(chapterId=${chapterId},level=${level},keyword=${keyword},
+                        page=${page+1},limit=${limit})}">
+                            <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:classappend="${page<totalPage}?'':'disabled'">
+                        <a class="page-link" th:href="@{/admin/question(chapterId=${chapterId},level=${level},keyword=${keyword},
+                        page=${totalPage},limit=${limit})}">
+                            <span aria-hidden="true">Last</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <p th:if="${totalPage>0}">Trang : [[${page}]]/[[${totalPage}]]</p>
+        </div>
+        <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+                role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel33">Chọn môn học </h4>
+                <button type="button" class="close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+                </div>
+                <form action="#" th:action="@{/admin/question(page=${page},limit=${limit})}" method="POST">
+                <div class="modal-body">
+                    <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 mt-1 text-center" name="subjectId">
+                    <option selected value="0">------ Lựa chọn môn học -----</option>
+                    <option th:each="item:${subjects}" th:value="${item.subjectId}">[[${item.subjectName}]]</option>                  
+                    </select>
+                    <p th:if="${error}" class="text-danger ms-2">*[[${error}]]</p>
+                    <input type="text" name="wayCreate" id="wayCreate" hidden>
+                    <input type="text" name="page" th:value="${page}" hidden>
+                    <input type="text" name="limit" th:value="${limit}"  hidden>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary ml-1">
+                        <i class="bx bx-check d-block d-sm-none"></i>Tạo
+                    </button>
+                    <button type="button" class="btn btn-light-secondary"
+                            data-bs-dismiss="modal">
+                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Đóng</span>
+                    </button>                 
+                </div>
+                </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div layout:fragment="script">
+    <script th:src="@{/assets/extensions/choices.js/public/assets/scripts/choices.js}"></script>
+    <script th:src="@{/assets/js/pages/form-element-select.js}"></script>
+    <script>
+        $(document).ready(function(){          
+            $('#add-new').click(function(){
+                $('#wayCreate').val('handle')
+            });
+    
+            $('#upload-new').click(function(){
+                $('#wayCreate').val('automatic')
+            });         
+            if($('#status').val()!=""){
+                    Swal.fire({
+                        position: 'center',
+                        icon: $('#status').val(),
+                        title: $('#message').val(),
+                        showConfirmButton: false,
+                        timer: 1500
+                    }) 
+                } 
+        });
+    </script>
+</div>
+</body>
+</html>

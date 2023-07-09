@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body >
+  <section class="row" layout:fragment="content">
+    <div class="col-12 col-md-12">
+      <div class="row">
+        <div class="col-12">
+          <div class="card shadow-lg bg-body rounded" th:style="'background-image:url(' + @{/assets/images/logo/bg.jpg} + '); background-repeat: no-repeat; background-size: cover; height:630px;'">
+            <div class="card-body pt-1 row">
+                <div class="col-md-3 p-2 text-white">
+                  <div class="card shadow rounded-3 bg-primary bg-gradient">
+                    <div class="card-header fs-5 bg-primary bg-gradient text-white py-3">
+                      Câu hỏi
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title text-white mt-2">90</h5>
+                      <a href="#" class="btn bg-tranparent float-end text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 p-2 text-white">
+                  <div class="card shadow rounded-3 bg-success bg-gradient">
+                    <div class="card-header fs-5 bg-success bg-gradient text-white py-3">
+                      Đề thi
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title text-white mt-2">20</h5>
+                      <a href="#" class="btn bg-tranparent float-end text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 p-2 text-white">
+                  <div class="card shadow rounded-3 bg-warning bg-gradient">
+                    <div class="card-header fs-5 bg-warning bg-gradient text-white py-3">
+                      Học sinh
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title text-white mt-2">60</h5>
+                      <a href="#" class="btn bg-tranparent float-end text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 p-2 text-white">
+                  <div class="card shadow rounded-3 bg-danger bg-gradient">
+                    <div class="card-header fs-5 bg-danger bg-gradient text-white py-3">
+                      Giáo viên
+                    </div>
+                    <div class="card-body">
+                      <h5 class="card-title text-white mt-2">10</h5>
+                      <a href="#" class="btn bg-tranparent float-end text-white"><i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                  </div>
+                </div>                    
+                
+            </div>
+          </div>
+        </div>    
+      </div>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg rounded">
+    <p class="fs-6 mb-2 fw-bold">Tạo câu hỏi từ file excel</p>
+    <p class="fs-6 mb-2 fw-bold">Môn học : 
+      <span class="fs-5 text-primary">[[${subject.subjectName}]]</span>
+      -Ngân hàng câu hỏi : <span class="fs-5 text-primary">[[${questionBank.questionBankName}]]</span>
+    </p>
+    <a class="btn btn-success" th:href="@{/admin/download-template-question}"><i class="fas fa-download me-2"></i> Tải file mẫu</a>
+    <div class="row">
+      <div class="col-md-12 pt-2 px-1">
+        <form class="px-4" th:object="${questionFile}" th:action="@{/admin/question/create-question-from-file}"
+              method="POST" enctype="multipart/form-data">
+          <input type="text" th:field="*{subjectId}" hidden>
+          <p class="fs-6 mb-2 fw-bold">Bước 1: <span class="text-danger fs-6 fw-bold">(*)</span></p>
+          <div class="form-group mb-0 input-group mb-2 row">           
+            <select class="form-select rounded-3 mb-0 mx-2 px-2 py-2 mt-1 text-center col-md-6" th:field="*{chapterId}">
+              <option selected value="0">----------------- Chương -----------------</option>
+              <option th:each="item:${chapters}" th:value="${item.chapterId}">[[${item.chapterName}]]</option>      
+            </select>
+            <p class="text-danger" th:if="${#fields.hasErrors('chapterId')}" th:errors="*{chapterId}"></p>
+          </div>
+          <div class="fs-6 mb-2 fw-bold mt-2">Bước 2:
+            <span class="text-danger fs-6 fw-bold">(* Tải file chứa câu hỏi theo đúng định dạng file mẫu đuôi file .xlsx )</span>
+            <input type="file" name="file"  class="form-control rounded-3 my-1">
+            <input type="text" th:field="*{fileName}" hidden>
+            <p class="text-danger" th:if="${#fields.hasErrors('fileName')}" th:errors="*{fileName}"></p>
+          </div>
+          <button class='btn btn-primary font-bold mt-2' id="test">
+            <i class="fas fa-upload me-2"></i>
+            Tải lên
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

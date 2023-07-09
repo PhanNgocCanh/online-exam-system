@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card" layout:fragment="content">
+  <div class="card-body px-5 overflow-auto shadow-lg rounded">
+    <div class="email-action">
+      <!-- action left start here -->
+      <div class="action-left d-flex align-items-center">
+        <!-- select All checkbox -->
+        <div class="fw-bold">
+          Kết quả thi của sinh viên: <br>
+          <p class="mt-2">
+            Họ tên: <span class="btn btn-primary me-3">[[${student.fullName}]]</span>
+            Lớp: <span class="btn btn-primary me-3 mb-2 ms-3">[[${student.className}]]</span>
+          </p>
+          <p class="mt-2">
+            Đề thi: <span class="btn btn-primary me-3">[[${test.testName}]] (Mã: [[${test.testId}]])</span>
+            Điểm đạt được: <span class="btn btn-success me-3 mb-2">[[${result.mark}]]</span>
+          </p>        
+        </div>
+      </div>
+     
+    </div>
+    <!-- / action right -->
+    <p>Chi tiết:</p>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover" id="table">
+        <thead>
+        <tr>
+          <th class="text-center" style="width: 4%;">#</th>
+          <th class="text-center">Câu hỏi</th>
+          <th class="text-center" style="width: 30%;">Câu trả lời</th>
+          <th class="text-center" style="width: 10%;">Đúng/Sai</th>         
+        </tr>
+        </thead>
+        <tbody id="myTable">
+        <tr th:each="item,start:${answers.questionAnswerDTOs}">
+          <td class="text-bold-500 py-1 text-center">[[${start.index+1}]]</td>
+          <td class="text-center py-1" th:utext="${item.questionContent}"></td>         
+          <td class="text-center py-1">
+            <span class="" th:each="ans:${item.answerDTOs}" 
+            th:if="${ans.answerId==item.answerSelected}">
+              [[${ans.answerContent}]]
+            </span>
+          </td>
+          <td class="text-bold-500 text-center py-1">
+            <span th:if="${item.answerSelected==item.correctAnswer}" class="badge badge-pill bg-light-success me-1">
+              Đúng
+            </span>
+            <span th:unless="${item.answerSelected==item.correctAnswer}" class="badge badge-pill bg-light-danger me-1">
+              Sai
+            </span>
+          </td>                         
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+ <script layout:fragment="script">
+        $(document).ready(function(){
+        
+        });
+
+ </script>
+</body>
+</html>

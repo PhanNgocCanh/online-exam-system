@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{client-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="row" layout:fragment="content">
+  <div class="col-12 col-md-12">
+    <div class="row">
+      <div class="col-12 col-xl-10">
+        <div class="card px-5 pt-2 overflow-auto shadow-lg rounded" style="height: 900px;">
+          <div class="p-3 border border-primary border-2 bg-body rounded-3">
+            <div class="row">
+              <div class="col-md-4 text-center">               
+                <p class="fs-6 mt-2 fw-bold">Họ và tên: [[${student.fullName}]]</p>
+                <p class="fs-6 mt-1">Lớp: [[${student.className}]]</p>
+                <p class="fs-6 mb-1">Mã đề thi: [[${test.testId}]]</p>
+              </div>
+              <div class="col-md-8 text-center"> 
+                <p class="fs-6 fw-bold mb-1">Ngày <span id="date"></span> Tháng <span id="month"></span> Năm <span id="year"></span></p> 
+                <p class="fs-6 mb-1 mt-1">Kỳ thi: <span class="fw-bold">[[${exam.examName}]]</span></p>            
+                <p class="fs-6 mb-1 mt-1">Môn thi: <span class="fw-bold">[[${subject.subjectName}]]</span></p>               
+                <p class="fs-6">Thời gian làm bài: <span class="text-danger fw-bold">[[${test.maxTime}]] phút</span></p>
+              </div>
+            </div>
+          </div>
+          <input type="text" id="maxTime" th:value="${test.maxTime}" hidden>
+          <form id="myForm" class="card-body" th:object="${questions}" th:action="@{/test}" method="POST">
+            <p class="text-center text-primary fs-5 fw-bold mt-1 mb-0">Bài làm</p>
+            <input type="text" th:value="${test.testId}" name ="testId" hidden>
+            <hr>
+            <div class="question" th:each="item,start:*{questionAnswerDTOs}">
+              <input type="text" th:field="*{questionAnswerDTOs[__${start.index}__].questionId}" hidden>
+              <div class="my-2 fw-bold">
+                <u class="text-danger fs-6">Câu hỏi [[${start.index+1}]]: </u>
+                <span class="ms-2" th:utext="*{questionAnswerDTOs[__${start.index}__].questionContent}"></span>
+              </div>
+              <div class="row ms-2">
+                <div class="form-check form-check mb-3 col-md-6"
+                 th:each="answer,str:*{questionAnswerDTOs[__${start.index}__].answerDTOs}">
+                  <input class="form-check-input" type="radio" th:field="*{questionAnswerDTOs[__${start.index}__].answerSelected}" 
+                  th:id="${answer.answerId}" th:value="${answer.answerId}" th:attr="data-index=${start.index+1}">
+                  <label class="form-check-label"  th:for="${answer.answerId}">
+                    [[${answer.answerContent}]]            
+                  </label>
+                </div>            
+              </div>
+            </div>                  
+          </form>
+        </div>
+      </div>
+      <div class="col-12 col-xl-2">
+        <div class="card shadow-lg bg-body rounded">
+          <div class="card-header pb-2">
+            <p class="text-center text-primary fs-6 fw-bold">Thời gian còn lại</p>
+            <p class="text-center text-primary fs-5 fw-bold mb-1 text-danger" id="time"></p>
+          </div>
+          <div class="card-body">
+
+          </div>
+        </div>
+        <div class="card shadow-lg bg-body rounded">
+          <div class="card-header py-1">
+            <p class="text-center text-primary fs-6 fw-bold">Số câu hỏi</p>
+          </div>
+          <div class="card-body text-center px-5 mt-1 overflow-auto" style="height:648px;">
+            <p id="label-ques" th:each="item:${#numbers.sequence(1,questions.questionAnswerDTOs.size())}" 
+            class="bg-danger text-light py-1 fw-bold rounded-4" th:attr="data-label=${item}">[[${item}]]</p>           
+          </div>
+        </div>
+        <div class="card shadow-lg bg-body rounded">
+          <div class="card-body mx-auto">          
+            <button class="btn btn-success" type="button" id="submitTest"><i class="fas fa-paper-plane me-2"></i> Nộp bài</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div layout:fragment="script">
+  <script src="assets/extensions/sweetalert2/sweetalert2.min.js"></script>>
+  <script src="assets/js/pages/sweetalert2.js"></script>>
+  <script>
+        $(document).ready(function(){
+          var date = new Date();
+          $('#date').text(date.getDate())
+          $('#month').text(date.getMonth()+1)
+          $('#year').text(date.getFullYear())
+          var val = $('#maxTime').val(), sec = 59;
+            var h = Math.floor(val/60);
+            hor = h<10 ? '0'+h:h;
+            val = val%60;
+            val = val<10?'0'+val:val;
+            $('#time').text(hor+':'+val+":00");
+            const interval = setInterval(function(){
+                if(val==0) h = h-1;
+                let hour = h;
+                if(val == 0) val = 60;
+                let min = val - 1;
+                let second = sec;
+                hour = hour < 10 ? '0'+ hour : hour;
+                min = min < 10 ? '0' + min : min;
+                second = second < 10 ? '0' + second : second;
+                $('#time').text(hour+':'+min+":"+second);
+                sec = sec - 1;
+                if(sec == 0) {
+                    val = val - 1;
+                    if(val == 0 && h == 0) $('#myForm').submit();
+                    else if(val == 0 && h > 0){
+                        h = h - 1;
+                        val = 60;
+                    }
+                    sec = 59;
+                }
+            },1000);         
+        })
+        $('input').on('click',function(){
+            var temp = this;
+            $('*[id*=label-ques]:visible').each(function(index,e){
+                if(parseInt(e.getAttribute('data-label'))==$(temp).data().index){
+                    e.classList.add('choosed');
+                    console.log(index);
+                }
+            })
+        })
+        $('#submitTest').click(function(){
+            Swal.fire({
+            title: 'Bạn có muốn thực sự nộp bài không ?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',        
+            }).then((result) => {          
+            if (result.isConfirmed) {
+                $('#myForm').submit();
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+            })
+        })
+    </script>
+</div>
+</body>
+</html>

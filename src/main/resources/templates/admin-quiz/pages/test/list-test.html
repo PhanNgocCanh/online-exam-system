@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg rounded">
+    <div class="email-action">
+      <!-- action left start here -->
+      <div class="action-left d-flex align-items-center float-end">
+        <div class="dropdown me-3">
+          <button class="btn btn-primary dropdown-toggle me-1" type="button"
+              id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              Tạo đề thi
+          </button>
+          <div class="dropdown-menu shadow rounded-3" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" type="button" id="handle" data-bs-toggle="modal"
+            data-bs-target="#inlineForm">
+              <i class="fas fa-plus me-2"></i>
+              Tạo đề thi thủ công
+            </a>
+            <a class="dropdown-item" type="button" id="excel" data-bs-toggle="modal"
+            data-bs-target="#inlineForm">
+              <i class="fas fa-file-excel me-2"></i>
+              Tạo từ file excel
+            </a>
+            <a class="dropdown-item" type="button" id="automatic" data-bs-toggle="modal"
+                data-bs-target="#inlineForm">
+              <i class="fas fa-folder-open me-2"></i>
+              Tạo đề thi tự động
+            </a>
+          </div>
+      </div>    
+      </div>
+      <form class="action-right mb-2" th:action="@{/admin/test}">
+        <!-- search bar  -->
+        <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 mt-1 text-center" name="subjectId">
+          <option selected value="0">--- Môn học ---</option>
+          <option th:each="item:${subjects}" th:value="${item.subjectId}"
+          th:selected="${param.subjectId!=null} ? (${param.subjectId[0]==''+item.subjectId}):'false'">
+            [[${item.subjectName}]]
+          </option>         
+        </select>  
+        <input type="text" name="page" th:value="${page}" hidden>
+        <input type="text" name="limit" th:value="${limit}" hidden>   
+        <button class='btn btn-primary font-bold py-2 mb-1'><i class="fas fa-search"></i> Tìm kiếm</button>
+      </form>
+      <!-- action left end here -->    
+      <!-- action right start here -->
+    </div>
+    <!-- / action right -->
+    <div class="table-responsive">
+      <table class="table table-lg table-hover" id="table" th:if="${totalPage>0}">
+        <thead>
+        <tr>
+          <th class="text-center" style="width: 1%;">#</th>
+          <th class="text-center">Tên đề thi</th>
+          <th class="text-center" style="width: 20%;">Thông tin đề thi</th>
+          <th class="text-center" style="width: 15%;">Thuộc môn học</th>
+          <th class="text-center" style="width: 20%;">Thao tác</th>
+        </tr>
+        </thead>
+        <tbody id="myTable">
+          <tr th:each="item,start:${tests}">
+            <td class="text-bold-500 py-1 text-center">[[${page-1}*${limit}+${start.index+1}]]</td>
+            <td class="text-center py-1 fw-bold">
+              <p>[[${item.testName}]]</p>
+            </td>
+            <td class="text-bold-500 py-1">
+              <ul>
+                 <li>Điểm tối đa: [[${item.maxScore}]]</li>
+                 <li>Số câu: [[${item.totalSentence}]]</li>
+                 <li>Thời gian: [[${item.maxTime}]] phút</li>
+              </ul>
+            </td>
+            <td class="text-center py-1">
+              <p>[[${item.subjectName}]]</p>
+            </td>
+            <td class="text-center py-1">
+              <a class="btn btn-warning" th:href="@{/admin/test/{testId}(testId=${item.testId})}"><i class="fas fa-cogs"></i></a>
+              <a class="btn btn-primary" th:href="@{/admin/print-test/{testId}(testId=${item.testId})}"><i class="fas fa-file-pdf"></i></a>
+              <a th:href="@{/admin/print-answer/{testId}(testId=${item.testId})}" class="btn btn-success"><i class="fas fa-question-circle"></i></a>
+              <a class="btn btn-danger" th:href="@{/admin/delete-test/{testId}(testId=${item.testId})}"><i class="fas fa-trash"></i></a>
+            </td>
+
+          </tr>      
+        </tbody>
+      </table>
+      <p th:unless="${totalPage>0}" class="text-center fs-5">Không tìm thấy kết quả !</p>
+      <input type="hidden" id="status" th:value="${status}?${status}:''">
+      <input type="hidden" id="message" th:value="${message}?${message}:''">
+      <nav th:if="${totalPage>0}" aria-label="Page navigation example">
+        <ul class="pagination pagination-primary">
+            <li class="page-item" th:classappend="${page>1}?'':'disabled'">
+                <a class="page-link" th:href="@{/admin/test(subjectId=${subjectId},page=1,limit=${limit})}">
+                    <span aria-hidden="true">First</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${page>1}?'':'disabled'">
+                <a class="page-link" th:href="@{/admin/test(subjectId=${subjectId},page=${page-1},limit=${limit})}">
+                    <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                </a>
+            </li>
+            <li th:each="item:${#numbers.sequence(1,totalPage)}" 
+            class="page-item" th:classappend="${item==page} ? 'active':''">
+                <a class="page-link" th:if="${item==page-1||item==page||item==page+1}"
+                 th:href="@{/admin/test(subjectId=${subjectId},page=${item},limit=${limit})}">[[${item}]]</a>
+            </li>                    
+            <li class="page-item" th:classappend="${page<totalPage}?'':'disabled'">
+                <a class="page-link" th:href="@{/admin/test(subjectId=${subjectId},page=${page+1},limit=${limit})}">
+                    <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${page<totalPage}?'':'disabled'">
+                <a class="page-link" th:href="@{/admin/test(subjectId=${subjectId},page=${totalPage},limit=${limit})}">
+                    <span aria-hidden="true">Last</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+      <p th:if="${totalPage>0}">Trang : [[${page}]]/[[${totalPage}]]</p>
+    </div>
+  </div>
+   <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel33" aria-hidden="true">
+     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+          role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h4 class="modal-title" id="myModalLabel33">Chọn môn học </h4>
+           <button type="button" class="close" data-bs-dismiss="modal"
+                   aria-label="Close">
+             <i data-feather="x"></i>
+           </button>
+         </div>
+         <form action="#" th:action="@{/admin/test}" method="POST">
+           <div class="modal-body">
+            <input type="text" name="wayCreate" id="way" hidden>
+             <select class="form-select rounded-3 mb-0 mx-1 px-2 py-2 mt-1 text-center" name="subjectId">
+               <option selected value="0">------ Lựa chọn môn học -----</option>
+               <option th:each="item:${subjects}" th:value="${item.subjectId}">[[${item.subjectName}]]</option>             
+             </select>
+           </div>
+           <div class="modal-footer">
+            <button type="submit" class="btn btn-primary ml-1"
+                    data-bs-dismiss="modal">
+              <i class="bx bx-check d-block d-sm-none"></i>Tạo     
+            </button>
+             <button type="button" class="btn btn-light-secondary"
+                     data-bs-dismiss="modal">
+               <i class="bx bx-x d-block d-sm-none"></i>
+               <span class="d-none d-sm-block">Đóng</span>
+             </button>             
+           </div>
+         </form>
+       </div>
+     </div>
+   </div>
+</div>
+<script layout:fragment="script">
+      $(document).ready(function(){
+        $('#handle').click(function(){
+            $('#way').val("handle");
+        });
+        $('#excel').click(function(){
+            $('#way').val("excel");
+        });
+        $('#automatic').click(function(){
+            $('#way').val("automatic");
+        });
+        if($('#status').val()!=""){
+            Swal.fire({
+                position: 'center',
+                icon: $('#status').val(),
+                title: $('#message').val(),
+                showConfirmButton: false,
+                timer: 1500
+            }) 
+        } 
+      })
+</script>
+</body>
+</html>

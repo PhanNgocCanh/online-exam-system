@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{client-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <section class="row" layout:fragment="content">
+  <div class="col-12 col-md-12">
+    <div class="row">
+      <div class="col-12 col-xl-4">
+        <div class="card shadow-lg bg-body rounded">
+          <div class="card-body row pt-1">
+            <div class="col-md-12 mt-5">
+              <div id="chart-visitors-profile"></div>
+              <p class="text-center mt-5 fs-5 fw-bold">Kết quả gần đây của bạn</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-8">
+        <div class="card shadow-lg bg-body rounded">
+          <div class="card-body d-flex justify-content-center">
+            <img src="assets/images/logo/banner-image3.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="hidden" id="status" th:value="${status}?${status}:''">
+  <input type="hidden" id="message" th:value="${message}?${message}:''">
+</section>
+<div layout:fragment="script">
+    <script th:src="@{/assets/extensions/apexcharts/apexcharts.min.js}"></script>
+    <script th:src="@{/assets/js/pages/dashboard.js}"></script>
+    <script>
+      $(document).ready(function(){            
+            if($('#status').val()!=""){
+                Swal.fire({
+                    position: 'center',
+                    icon: $('#status').val(),
+                    title: $('#message').val(),
+                    showConfirmButton: false,
+                    timer: 1500
+                }) 
+            }   
+        });
+    </script>
+</div>
+</body>
+</html>

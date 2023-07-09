@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www/thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin-quiz/layout/layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ <div class="card" layout:fragment="content">
+  <div class="card-body px-3 overflow-auto shadow-lg rounded">
+    <div class="row">
+      <div class="col-md-12 pt-2 px-1">
+        <div class="px-4">
+          <a class="btn btn-primary" th:href="@{/admin/question(page=${page},limit=${limit})}">
+            <i class="fas fa-arrow-circle-left me-2"></i>Quay lại
+          </a>
+          <p class="fs-6 mt-2 mb-2 fw-bold">Xem và cập nhật câu hỏi</span></p>
+          <p class="fs-6 mb-2 fw-bold">Bước 1: <span class="text-danger fs-6 fw-bold">(*)</span></p>
+          <form action="" th:object="${question}" th:action="@{/admin/update-question}" method="POST">
+              <input type="text" th:field="*{questionId}" hidden>
+              <div class="form-group mb-0 input-group mb-2 row">           
+                <select class="form-select rounded-3 mb-0 mx-2 px-2 py-2 mt-1 text-center col-md-3" th:field="*{chapterId}">
+                  option selected value="0">----------------- Chương -----------------</option>
+                    <option th:each="item:${chapters}" th:value="${item.chapterId}">[[${item.chapterName}]]</option>
+                </select>
+                <select class="form-select rounded-3 mb-0 mx-2 px-2 py-2 mt-1 text-center col-md-3" th:field="*{level}">
+                  <option selected value="">---------------- Cấp độ ----------------</option>
+                    <option value="NB">Nhận biết</option>
+                    <option value="TH">Thông hiểu</option>
+                    <option value="VD">Vận dụng</option>
+                    <option value="VDC">Vận dụng cao</option>
+                </select>
+              </div>
+              <p class="fs-6 mb-2 fw-bold">Bước 2: Nội dung câu hỏi <span class="text-danger fs-6 fw-bold">(*)</span></p>
+              <div class="form-group mb-0 input-group-lg">
+                <div id="summernote"></div>
+                <input type="text" hidden id="content" th:field="*{questionContent}">
+              </div>
+              <div class="fs-6 mb-2 fw-bold mt-2">Bước 3: Các câu trả lời và đáp án đúng
+                <span class="text-danger fs-6 fw-bold">(* Lưu ý bạn có thể thay đổi nội dung và đáp án đúng)</span>               
+              </div>
+              <div class="form-group mb-0 input-group-lg" id="plain">
+                <div class="d-flex flex-row form-check align-items-center" th:each="item:${answers}">
+                  <input type="radio" class="form-check-input me-2" th:value="${item.answerId}" name="correctAnswer" th:checked="${item.answerId==question.correctAnswer}">
+                  <input type="text" th:value="${item.answerContent+'//'}" name="answerContent" 
+                  class="form-control rounded-3 my-1" onfocusout="addEnding(this)" onfocusin="removeEnding(this)" style="width: 96% !important;">
+                  <input type="text" name="answerId" th:value="${item.answerId}" hidden>
+                  <a class="btn ms-2" th:href="@{/admin/delete-answer/{answerId}(answerId=${item.answerId})}"><i class="fas fa-trash"></i></a>
+                </div>
+              </div>
+              <div class="fs-6 mb-2 fw-bold mt-2">Bước 4: Giải thích (Nếu có)           
+                <input type="text" id="explain-answer" 
+                class="form-control rounded-3 my-1" placeholder="Giải thích đáp án" th:field="*{explain}">
+              </div>                          
+              <button class='btn btn-primary font-bold mt-2' >
+                <i class="fas fa-check me-2"></i>
+                Cập nhật
+              </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div layout:fragment="script">
+  <script th:src="@{/assets/extensions/summernote/summernote-lite.min.js}"></script>
+  <script th:src="@{/assets/js/pages/summernote.js}"></script>
+  <script>
+        $(document).ready(function(){
+          $("#summernote").summernote("code", $('#content').val());
+        })
+        $('#summernote').on('summernote.keyup', function(we, e) {
+                var html = $("#summernote").summernote("code");
+                $('#content').val(html);
+        });
+        function removeEnding(ba){
+            $(ba).val($(ba).val().replace("//",""));           
+        }
+        function addEnding(ba){
+          if($(ba).val()!='') $(ba).val($(ba).val()+"//");
+        }
+    </script>
+</div>
+</body>
+</html>

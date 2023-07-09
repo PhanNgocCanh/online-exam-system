@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Mazer Admin Dashboard</title>
+
+  <link rel="stylesheet" th:href="@{/assets/css/main/app1.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/main/custom.css}">
+  <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+  <link rel="shortcut icon" th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+  <link rel="stylesheet" th:href="@{/assets/extensions/fontawesome-free/css/all.min.css}" />
+  <link rel="stylesheet" th:href="@{/assets/extensions/sweetalert2/sweetalert2.min.css}">
+</head>
+
+<body>
+<nav class="navbar fixed-top narbar-custom py-0 bg-body shadow-sm rounded" th:replace="client-quiz/partial/header::header">
+</nav>
+<div id="app" class="app-top">
+  <div id="sidebar" class="active" th:replace="client-quiz/partial/nav-bar::nav">
+
+  </div>
+  <div id="main">
+    <header class="mb-3">
+      <a href="#" class="burger-btn d-block d-xl-none">
+        <i class="bi bi-justify fs-3"></i>
+      </a>
+    </header>
+
+    <div class="page-content" layout:fragment="content">
+
+    </div>
+
+    <footer>
+      <div class="footer clearfix mb-0 text-muted">
+        <div class="float-start">
+          <p>Đồ án tốt nghiệp </p>
+        </div>
+        <div class="float-end">
+
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+<div class="modal fade text-left" id="changePassForm" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+         role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel33">Thay đổi mật khẩu</h4>
+          <button type="button" class="close" data-bs-dismiss="modal"
+                  aria-label="Close">
+            <i data-feather="x"></i>
+          </button>
+        </div>
+        <form action="#" th:action="@{/change-password}" method="GET">
+          <div class="modal-body">        
+            <label>Mật khẩu cũ: </label>
+            <div class="form-group">
+              <input type="password" placeholder="Mật khẩu cũ"
+                     class="form-control" name="oldPass">
+            </div>
+            <label>Mật khẩu mới: </label>
+            <div class="form-group">
+              <input type="password" placeholder="Mật khẩu mới"
+                     class="form-control" name="newPass">
+            </div>
+          </div>        
+          <button class="btn btn-primary float-end me-3 mb-2" type="submit">Thay đổi</button>
+        </form>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light-secondary"
+                  data-bs-dismiss="modal">
+            <i class="bx bx-x d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<script th:src="@{/assets/extensions/jquery/jquery.min.js}"></script>
+<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/assets/js/app.js}"></script>
+<script th:src="@{/assets/extensions/sweetalert2/sweetalert2.min.js}"></script>>
+<script th:src="@{/assets/js/pages/sweetalert2.js}"></script>
+<div layout:fragment="script">
+
+</div>
+</body>
+</html>

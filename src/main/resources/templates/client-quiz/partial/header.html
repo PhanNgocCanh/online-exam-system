@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav class="navbar fixed-top narbar-custom py-0 bg-body shadow-sm rounded" th:fragment="header">
+  <div class="container mx-0 ms-2 d-flex justify-content-between" style="max-width: 100%;">
+    <a class="navbar-brand" href="#">
+      <img th:src="@{/assets/images/logo/logo.svg}" alt="Bootstrap" width="70" height="70">
+    </a>
+
+    <div class="navbar-brand d-flex justify-content-center align-items-center">
+
+      <div class="dropdown">
+        <button class="btn btn-light bg-body float-end dropdown-toggle d-flex justify-content-center align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img class="rounded-circle" th:src="@{/assets/images/logo/user.png}" alt="Bootstrap" width="25" height="60">
+          <p class="mb-0 ms-2 fs-6">Xin chào [[${#request.userPrincipal.principal.fullname}]] !</p>
+        </button>
+        <ul class="dropdown-menu start-50">
+          <li>
+            <button class="dropdown-item" type="button" data-bs-toggle="modal"data-bs-target="#changePassForm">
+              <i class="fas fa-users-cog me-2"></i>Đổi mật khẩu
+            </button>
+          </li>
+          <li><a class="dropdown-item" th:href="@{/logout}"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+</body>
+</html>

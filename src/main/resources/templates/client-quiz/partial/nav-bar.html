@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="sidebar" class="active" th:fragment="nav">
+    <div class="sidebar-wrapper active app-top">
+        <div class="sidebar-menu">
+            <ul class="menu my-1">
+                <li class="sidebar-title">Bảng điều khiển</li>
+
+                <li class="sidebar-item">
+                    <a th:href="@{/}" class='sidebar-link'>
+                        <i class="fas fa-home"></i>
+                        <span>Trang chủ</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a th:href="@{/exam}" class='sidebar-link'>
+                        <i class="fas fa-person-booth"></i>
+                        <span>Phòng thi</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a th:href="@{/view-history-exam}" class='sidebar-link'>
+                        <i class="fas fa-pager"></i>
+                        <span>Lịch sử thi</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

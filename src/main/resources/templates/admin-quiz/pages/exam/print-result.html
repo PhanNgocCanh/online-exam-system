@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/assets/css/main/app1.css}">
+    <link rel="stylesheet"  th:href="@{/assets/css/main/custom.css}">
+    <link rel="shortcut icon"  th:href="@{/assets/images/logo/favicon.svg}" type="image/x-icon">
+    <link rel="shortcut icon"  th:href="@{/assets/images/logo/favicon.png}" type="image/png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+    <link rel="stylesheet"  th:href="@{/assets/extensions/fontawesome-free/css/all.min.css}" />
+</head>
+<body>
+    <div class="">
+        <div class="my-4">
+            <div class="row">
+                <div class="col-12 col-md-12">
+                    <div class="row d-flex justify-content-center align-items-center">
+                      <div class="col-12 col-xl-10">
+                        <div class="card px-5 pt-2">
+                          <div class="p-3 border border-primary border-2 bg-body rounded-3">
+                            <div class="text-center">                              
+                              <div class="row">
+                                <div class="col-md-6 text-center">
+                                  <h6>Mã phòng :[[${room.roomId}]] </h6>
+                                  <p class="fs-6 mt-2 fw-bold">Tên phòng thi: [[${room.roomName}]]</p>
+                                  <p class="fs-6 mt-1">Thời gian bắt đầu:[[${room.formatTimeStart}]]</p>
+                                  <p class="fs-6 mb-1">Thời gian kết thúc:[[${room.formatTimeFinish}]]</p>                                
+                                </div>
+                                <div class="col-md-6">
+                                  <p class="fs-6 fw-bold text-center" th:each="item:${exams}" th:if="${item.examId==room.examId}">
+                                    Kỳ thi : [[${item.examName}]]
+                                  </p>
+                                  <p class="fs-6 fw-bold mb-1 text-center mb-4" th:each="item:${subjects}" 
+                                  th:if="${item.subjectId==room.subjectId}">
+                                    Môn thi : [[${item.subjectName}]]
+                                  </p>                                                               
+                                </div>
+                              </div>                                                                           
+                            </div>
+                          </div>
+                          <div class="card-body">
+                            <p class="text-center fs-5 fw-bold">Kết quả thi</p>
+                            <hr>
+                            <div class="row">                               
+                              <table class="table table-bordered table-hover border" id="table">
+                                <thead>
+                                <tr>
+                                  <th class="text-center" style="width: 10%;">#</th>
+                                  <th class="text-center">Họ tên</th>
+                                  <th class="text-center" style="width: 20%;">Lớp</th>
+                                  <th class="text-center" style="width: 15%;">Điểm</th>                                                   
+                                </tr>
+                                </thead>
+                                <tbody id="myTable">
+                                <tr th:each="item,start:${results}">
+                                  <td class="text-bold-500 py-1 text-center">[[${start.index}+1]]</td>
+                                  <td class="text-center py-1 fw-bold"><a href="class-news.html">[[${item.studentName}]]</a></td>         
+                                  <td class="text-center py-1">
+                                    <span class="badge badge-pill bg-light-info me-1">
+                                      [[${item.className}]]
+                                    </span>
+                                  </td>
+                                  <td class="text-bold-500 text-center py-1">
+                                    <span class="badge badge-pill bg-light-success me-1">
+                                     [[${item.mark}]]
+                                    </span>
+                                  </td>                                                   
+                                  </tr>
+                                </tbody>
+                              </table>                             
+                            </div>                                                      
+                          </div>
+                        </div>
+                      </div>                      
+                    </div>
+                  </div> 
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/assets/extensions/jquery/jquery.min.js}"></script>
+    <script th:src="@{/assets/js/bootstrap.js}"></script>
+    <script th:src="@{/assets/js/app.js}"></script>
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            window.print();
+            var roomId = [[${room.roomId}]]
+            location.href = 'http://localhost:8080/admin/room-detail-result/'+roomId;
+        })
+    </script>
+</body>
+</html>
